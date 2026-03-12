@@ -105,8 +105,9 @@ const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
 
+let registering = false;
 onAuthStateChanged(auth, user => {
-  if (user) window.location.href = 'pages/home.html';
+  if (user && !registering) window.location.href = 'pages/home.html';
 });
 
 window.switchTab = function(tab) {
@@ -158,7 +159,7 @@ window.doRegister = async function() {
   if (!/^[a-z0-9_]{3,20}$/.test(username)) { showError('reg-error', 'Usuário: 3-20 caracteres, só letras, números e _.'); return; }
   if (pass.length < 6) { showError('reg-error', 'A senha deve ter pelo menos 6 caracteres.'); return; }
   if (pass !== pass2) { showError('reg-error', 'As senhas não coincidem.'); return; }
-  setLoading('btn-register', true);
+  registering = true; setLoading('btn-register', true);
   try {
     const q = query(collection(db, 'usernames'), where('username', '==', username));
     const snap = await getDocs(q);
@@ -168,6 +169,8 @@ window.doRegister = async function() {
     const uid  = cred.user.uid;
     await setDoc(doc(db, 'users', uid), { username, display, uid, emoji: '😊', message: 'Olá! Estou usando o Messenger Online.', status: 'online', createdAt: new Date().toISOString() });
     await setDoc(doc(db, 'usernames', username), { username, email: fakeEmail, uid });
+    registering = false;
+    window.location.href = 'pages/home.html';
   } catch(e) {
     const msgs = { 'auth/email-already-in-use':'Nome de usuário já cadastrado.', 'auth/weak-password':'Senha muito fraca.' };
     showError('reg-error', msgs[e.code] || 'Erro: ' + e.code);
