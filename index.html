@@ -90,7 +90,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, query, collection, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey:            "AIzaSyDZkMLH3r5Vym9eE1YqHH8R_rWGR6_rWiw",
@@ -137,10 +137,9 @@ window.doLogin = async function() {
   if (!username || !password) { showError('login-error', 'Preencha todos os campos.'); return; }
   setLoading('btn-login', true);
   try {
-    const q = query(collection(db, 'usernames'), where('username', '==', username));
-    const snap = await getDocs(q);
-    if (snap.empty) { showError('login-error', 'Usuário não encontrado.'); setLoading('btn-login', false); return; }
-    const email = snap.docs[0].data().email;
+    const unameSnap = await getDoc(doc(db, 'usernames', username));
+    if (!unameSnap.exists()) { showError('login-error', 'Usuário não encontrado.'); setLoading('btn-login', false); return; }
+    const email = unameSnap.data().email;
     await setPersistence(auth, remember ? browserLocalPersistence : browserSessionPersistence);
     await signInWithEmailAndPassword(auth, email, password);
   } catch(e) {
@@ -162,9 +161,8 @@ window.doRegister = async function() {
   if (pass !== pass2) { showError('reg-error', 'As senhas não coincidem.'); return; }
   registering = true; setLoading('btn-register', true);
   try {
-    const q = query(collection(db, 'usernames'), where('username', '==', username));
-    const snap = await getDocs(q);
-    if (!snap.empty) { showError('reg-error', 'Nome de usuário já em uso.'); setLoading('btn-register', false); return; }
+    const unameCheck = await getDoc(doc(db, 'usernames', username));
+    if (unameCheck.exists()) { showError('reg-error', 'Nome de usuário já em uso.'); setLoading('btn-register', false); return; }
     const fakeEmail = `${username}@messenger.local`;
     const cred = await createUserWithEmailAndPassword(auth, fakeEmail, pass);
     const uid  = cred.user.uid;
