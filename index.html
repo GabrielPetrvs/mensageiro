@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Messenger Online — Entrar</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Messenger">
+<meta name="theme-color" content="#1a4fa0">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="favicon.svg">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Tahoma&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -183,6 +190,15 @@ document.addEventListener('keydown', e => {
     if (active.id === 'section-login') window.doLogin(); else window.doRegister();
   }
 });
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/mensageiro/sw.js', { scope: '/mensageiro/' })
+      .catch(e => console.log('SW error:', e));
+  });
+}
 </script>
 </body>
 </html>
