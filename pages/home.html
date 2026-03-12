@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Messenger Online</title>
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Messenger">
+<meta name="theme-color" content="#1a4fa0">
+<link rel="manifest" href="../manifest.json">
+<link rel="apple-touch-icon" href="../favicon.svg">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Tahoma&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -169,6 +176,28 @@
   .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 6px 16px; font-size: 11px; border-radius: 2px; z-index: 600; display: none; white-space: nowrap; }
   .toast.show { display: block; animation: fadeIn 0.2s ease; }
   @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+  /* INSTALL BANNER */
+  .install-banner { display: none; position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 290px; background: linear-gradient(to bottom, #e8f0ff, #ccdaff); border: 1px solid #6688cc; border-bottom: none; padding: 8px 12px; box-shadow: 0 -2px 8px rgba(0,0,0,.2); z-index: 300; align-items: center; gap: 10px; }
+  .install-banner.show { display: flex; animation: slideUp 0.3s ease; }
+  .install-banner-text { flex: 1; font-size: 11px; color: #003399; line-height: 1.4; }
+  .install-banner-text b { display: block; font-size: 12px; }
+  .install-btn { font-family: inherit; font-size: 10px; background: linear-gradient(to bottom, #4a90d9, #1a4fa0); color: #fff; border: 1px solid #1a4fa0; padding: 4px 10px; cursor: pointer; border-radius: 2px; white-space: nowrap; }
+  .install-btn:hover { background: linear-gradient(to bottom, #5aa0e9, #2a5fb0); }
+  .install-dismiss { font-size: 14px; color: #888; cursor: pointer; padding: 0 4px; }
+  .install-dismiss:hover { color: #cc0000; }
+
+  /* LAST MESSAGE */
+  .unread-item { background: #f0f4ff; }
+  .unread-item:hover { background: #dce8ff; }
+  .c-name-row { display: flex; align-items: center; justify-content: space-between; }
+  .c-name-bold { font-weight: bold; color: #003399; }
+  .lm-row { display: flex; align-items: center; gap: 2px; font-size: 10px; color: #888; overflow: hidden; margin-top: 1px; }
+  .lm-me { color: #888; flex-shrink: 0; }
+  .lm-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+  .lm-time { flex-shrink: 0; font-size: 9px; color: #bbb; margin-left: 4px; }
+  .lm-read { flex-shrink: 0; color: #4a90d9; font-size: 9px; margin-right: 2px; }
+  .lm-unread-dot { width: 7px; height: 7px; border-radius: 50%; background: #4a90d9; flex-shrink: 0; margin-right: 2px; }
 </style>
 </head>
 <body>
@@ -250,6 +279,17 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- INSTALL BANNER -->
+<div class="install-banner" id="installBanner">
+  <span style="font-size:28px">🦋</span>
+  <div class="install-banner-text">
+    <b>Adicionar à tela inicial</b>
+    Use o Messenger como app, com notificações!
+  </div>
+  <button class="install-btn" id="installBtn">Instalar</button>
+  <span class="install-dismiss" onclick="dismissInstall()">✕</span>
+</div>
 
 <!-- EDIT PROFILE MODAL -->
 <div class="modal-overlay" id="editModal">
@@ -346,7 +386,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs, onSnapshot, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs, onSnapshot, arrayUnion, arrayRemove, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getDatabase, ref, set, onValue, onDisconnect, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 const firebaseConfig = {
@@ -369,6 +409,7 @@ const EMOJIS = ['😊','😎','🤔','😄','😢','😂','🥰','😜','🤩','
 let myUid = null, myData = null, contactsData = {};
 let pendingPhotoBase64 = null, pendingRemovePhoto = false;
 let notifTimeout = null, pendingNotifUid = null;
+let lastMsgData = {}; // { uid: { text, fromMe, read, time } }
 
 // ===== NOTIFICATION SETTINGS =====
 const notifSettings = {
@@ -485,6 +526,7 @@ onAuthStateChanged(auth, async user => {
   setupPresence();
   listenContacts();
   listenRequests();
+  listenLastMessages();
   syncNotifUI();
   document.getElementById('loading').classList.add('hidden');
 
@@ -565,6 +607,28 @@ function listenContacts() {
   });
 }
 
+function listenLastMessages() {
+  const contacts = myData?.contacts || [];
+  contacts.forEach(uid => {
+    const chatId = [myUid, uid].sort().join('_');
+    const msgsRef = collection(db, 'chats', chatId, 'messages');
+    const q = query(msgsRef, orderBy('createdAt', 'desc'), limit(1));
+    onSnapshot(q, snap => {
+      if (snap.empty) { lastMsgData[uid] = null; }
+      else {
+        const d = snap.docs[0].data();
+        lastMsgData[uid] = {
+          text: d.text || '',
+          fromMe: d.senderUid === myUid,
+          time: d.createdAt?.toDate ? d.createdAt.toDate() : null,
+          read: d.readBy ? d.readBy.includes(myUid) : d.senderUid === myUid,
+        };
+      }
+      renderContacts();
+    });
+  });
+}
+
 window.renderContacts = function() {
   const filter = (document.getElementById('searchInput').value || '').toLowerCase();
   const area   = document.getElementById('contactsArea');
@@ -592,15 +656,26 @@ window.renderContacts = function() {
   gl.className = 'group-list'; gl.id = 'glist';
   list.forEach(c => {
     const item = document.createElement('div');
-    item.className = 'contact-item';
+    const lm = lastMsgData[c.uid];
+    const unread = lm && !lm.read && !lm.fromMe;
+    item.className = 'contact-item' + (unread ? ' unread-item' : '');
     const avatarHtml = c.photoBase64 ? `<img src="${c.photoBase64}" alt="">` : (c.emoji || '😊');
+    let lastMsgHtml = '';
+    if (lm) {
+      const prefix = lm.fromMe ? '<span class="lm-me">Eu: </span>' : '';
+      const readDot = lm.fromMe
+        ? `<span class="lm-read">${lm.read ? '✓✓' : '✓'}</span>`
+        : (unread ? '<span class="lm-unread-dot"></span>' : '');
+      const timeStr = lm.time ? lm.time.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' }) : '';
+      lastMsgHtml = `<div class="lm-row">${readDot}${prefix}<span class="lm-text">${escHtml(lm.text)}</span><span class="lm-time">${timeStr}</span></div>`;
+    }
     item.innerHTML = `
       <div class="contact-avatar">${avatarHtml}<div class="c-dot s-${c.status||'offline'}"></div></div>
       <div class="contact-info">
-        <div class="c-name">${escHtml(c.display || c.username)}</div>
-        <div class="c-msg">${escHtml(c.message || '')}</div>
+        <div class="c-name-row"><span class="c-name${unread ? ' c-name-bold' : ''}">${escHtml(c.display || c.username)}</span></div>
+        ${lastMsgHtml || `<div class="c-msg">${escHtml(c.message || '')}</div>`}
       </div>`;
-    item.onclick = () => openProfileModal(c.uid);
+    item.onclick = () => openChat(c.uid);
     gl.appendChild(item);
   });
   area.appendChild(gl);
@@ -774,6 +849,46 @@ function showToast(msg) {
 
 function escHtml(t) {
   return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ===== PWA INSTALL =====
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  if (!localStorage.getItem('install_dismissed')) {
+    document.getElementById('installBanner').classList.add('show');
+  }
+});
+
+document.getElementById('installBtn').addEventListener('click', async () => {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  const { outcome } = await deferredInstallPrompt.userChoice;
+  if (outcome === 'accepted') {
+    document.getElementById('installBanner').classList.remove('show');
+    showToast('✅ App instalado!');
+  }
+  deferredInstallPrompt = null;
+});
+
+window.dismissInstall = function() {
+  document.getElementById('installBanner').classList.remove('show');
+  localStorage.setItem('install_dismissed', '1');
+};
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('installBanner').classList.remove('show');
+  showToast('🦋 Messenger instalado com sucesso!');
+});
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/mensageiro/sw.js', { scope: '/mensageiro/' })
+      .catch(e => console.log('SW error:', e));
+  });
 }
 </script>
 </body>

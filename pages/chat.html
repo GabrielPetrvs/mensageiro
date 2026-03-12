@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Conversa — Messenger Online</title>
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Messenger">
+<meta name="theme-color" content="#1a4fa0">
+<link rel="manifest" href="../manifest.json">
+<link rel="apple-touch-icon" href="../favicon.svg">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Tahoma&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -111,7 +118,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp as fsTimestamp, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp as fsTimestamp, setDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getDatabase, ref, set, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 const firebaseConfig = {
@@ -234,7 +241,17 @@ onAuthStateChanged(auth, async user => {
         notifyNewMessage(otherData.display || otherData.username, last.data().text || '');
       }
     }
+    // Mark unread messages as read
+    if (document.hasFocus()) markAsRead(snap.docs);
     firstLoad = false;
+  });
+
+  // Also mark as read when window gets focus
+  window.addEventListener('focus', () => {
+    const q2 = query(collection(db, 'chats', chatId, 'messages'), orderBy('createdAt'));
+    import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js').then(({ getDocs }) => {
+      getDocs(q2).then(s => markAsRead(s.docs));
+    });
   });
 
   // Listen typing
@@ -272,6 +289,15 @@ function renderMessages(docs, skipScroll) {
   if (!skipScroll || wasAtBottom) area.scrollTop = area.scrollHeight;
 }
 
+async function markAsRead(docs) {
+  for (const d of docs) {
+    const data = d.data();
+    if (data.senderUid !== myUid && !(data.readBy || []).includes(myUid)) {
+      await updateDoc(doc(db, 'chats', chatId, 'messages', d.id), { readBy: arrayUnion(myUid) });
+    }
+  }
+}
+
 window.sendMsg = async function() {
   const input = document.getElementById('chatInput');
   const text  = input.value.trim();
@@ -307,6 +333,15 @@ window.ins       = function(t) { const el = document.getElementById('chatInput')
 window.goBack = function() { clearTyping(); if (unsubMsgs) unsubMsgs(); window.location.href = 'home.html'; };
 
 function escHtml(t) { return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/mensageiro/sw.js', { scope: '/mensageiro/' })
+      .catch(e => console.log('SW error:', e));
+  });
+}
 </script>
 </body>
 </html>
