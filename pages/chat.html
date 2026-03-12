@@ -15,6 +15,8 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Tahoma&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ── BASE ── */
   body { font-family: 'Tahoma', Arial, sans-serif; font-size: 11px; background: #1a3a6e; background-image: radial-gradient(ellipse at 20% 50%, #2a5298 0%, transparent 55%), radial-gradient(ellipse at 80% 20%, #0d47a1 0%, transparent 55%); display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 20px; }
   .chat-window { width: 480px; height: 540px; background: #fff; border: 1px solid #888; box-shadow: 3px 3px 10px rgba(0,0,0,.5); display: flex; flex-direction: column; animation: appear 0.2s ease; }
   @keyframes appear { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
@@ -71,6 +73,112 @@
   .loading-screen { position: fixed; inset: 0; background: rgba(26,58,110,0.9); display: flex; align-items: center; justify-content: center; z-index: 999; flex-direction: column; gap: 12px; }
   .loading-screen.hidden { display: none; }
   .loading-text { color: #fff; font-size: 13px; }
+
+  /* ═══════════════════════════
+     MOBILE — WhatsApp structure
+  ═══════════════════════════ */
+  @media (max-width: 768px) {
+    body { padding: 0 !important; align-items: stretch !important; min-height: 100dvh !important; }
+
+    .chat-window {
+      width: 100% !important;
+      height: 100dvh !important;
+      max-width: 100% !important;
+      border: none !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      background: #dce8ff !important;
+    }
+
+    /* ── HEADER mobile ── */
+    .title-bar { display: none; }
+    .tb-btn.close { display: none; }
+
+    .chat-header {
+      background: linear-gradient(to bottom, #2563c0, #1a4fa0);
+      border-bottom: none;
+      padding: 10px 12px 8px;
+      padding-top: max(10px, env(safe-area-inset-top));
+      gap: 10px;
+    }
+    .back-btn {
+      margin-left: 0; margin-right: 0;
+      background: transparent; border: none;
+      color: #fff; font-size: 20px; padding: 0 4px;
+      order: -1;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.15); }
+
+    .ch-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      border-color: rgba(255,255,255,0.4);
+      font-size: 20px;
+    }
+    .ch-name   { font-size: 15px; font-weight: bold; color: #fff; }
+    .ch-msg    { font-size: 11px; color: rgba(255,255,255,0.7); }
+    .ch-status { font-size: 11px; color: rgba(255,255,255,0.7); }
+
+    /* Mute button moves to header right side */
+    .mute-chat-btn {
+      margin-left: auto; background: transparent; border: none;
+      font-size: 18px; padding: 4px; color: rgba(255,255,255,0.8);
+    }
+
+    /* ── MESSAGES mobile ── */
+    .messages-area {
+      flex: 1;
+      background: #dce8ff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='30' cy='30' r='20' fill='none' stroke='%23b8c8ee' stroke-width='0.5'/%3E%3C/svg%3E");
+      padding: 10px 12px;
+      gap: 6px;
+      overflow-y: auto;
+    }
+    .messages-area::-webkit-scrollbar { display: none; }
+
+    .msg-group { max-width: 80%; }
+
+    .msg-meta { font-size: 11px; }
+    .msg-meta .time { font-size: 10px; }
+
+    .msg-bubble {
+      font-size: 14px; padding: 7px 12px; line-height: 1.5;
+      border-radius: 12px; border: none;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+    }
+    .mine .msg-bubble   { background: #fff8f0; border-radius: 12px 12px 4px 12px; }
+    .theirs .msg-bubble { background: #fff; border-radius: 12px 12px 12px 4px; }
+    .msg-system { font-size: 11px; }
+
+    /* ── TYPING ── */
+    .typing-indicator { font-size: 12px; padding: 4px 14px; }
+
+    /* ── TOOLBAR mobile ── */
+    .toolbar {
+      background: #f0f4ff;
+      border-bottom: 1px solid #dde4f4;
+      padding: 4px 8px;
+      gap: 4px;
+    }
+    .tool-btn { width: 30px; height: 28px; font-size: 16px; border-radius: 50%; }
+    .tool-btn:active { background: #dde4f4; }
+
+    /* ── INPUT ROW mobile ── */
+    .input-area {
+      background: #f0f4ff;
+      border-top: 1px solid #dde4f4;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .input-row { padding: 6px 10px; gap: 8px; align-items: flex-end; }
+    .chat-input {
+      border-radius: 20px; padding: 8px 14px;
+      font-size: 14px; height: auto; min-height: 38px; max-height: 100px;
+      border-color: #c8d4ee; resize: none;
+    }
+    .send-btn {
+      width: 40px; height: 40px; border-radius: 50%;
+      padding: 0; font-size: 16px; flex-shrink: 0;
+      align-self: flex-end;
+    }
+  }
 </style>
 </head>
 <body>
@@ -110,7 +218,7 @@
     </div>
     <div class="input-row">
       <textarea class="chat-input" id="chatInput" placeholder="Escreva uma mensagem... (Enter para enviar)" onkeydown="handleKey(event)" oninput="onTyping()"></textarea>
-      <button class="send-btn" onclick="sendMsg()">Enviar</button>
+      <button class="send-btn" id="sendBtn" onclick="sendMsg()">Enviar</button>
     </div>
   </div>
 </div>
@@ -328,7 +436,19 @@ function clearTyping() {
 
 window.handleKey = function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); window.sendMsg(); } };
 window.wrapText  = function(b, a) { const el = document.getElementById('chatInput'); const s = el.selectionStart, e2 = el.selectionEnd; const v = el.value; el.value = v.slice(0,s)+b+v.slice(s,e2)+a+v.slice(e2); el.focus(); };
-window.ins       = function(t) { const el = document.getElementById('chatInput'); const s = el.selectionStart; el.value = el.value.slice(0,s)+t+el.value.slice(s); el.focus(); };
+window.ins = function(t) { const el = document.getElementById('chatInput'); const s = el.selectionStart; el.value = el.value.slice(0,s)+t+el.value.slice(s); el.focus(); autoResize(el); };
+
+// Auto-resize textarea
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+document.getElementById('chatInput').addEventListener('input', function() { autoResize(this); });
+
+// On mobile swap send button text to arrow
+if (window.innerWidth <= 768) {
+  document.getElementById('sendBtn').textContent = '➤';
+}
 
 window.goBack = function() { clearTyping(); if (unsubMsgs) unsubMsgs(); window.location.href = 'home.html'; };
 

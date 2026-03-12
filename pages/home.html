@@ -15,14 +15,25 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Tahoma&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ── BASE ── */
   body {
     font-family: 'Tahoma', Arial, sans-serif; font-size: 11px;
     background: #1a3a6e;
-    background-image: radial-gradient(ellipse at 20% 50%, #2a5298 0%, transparent 55%), radial-gradient(ellipse at 80% 20%, #0d47a1 0%, transparent 55%);
-    display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 20px;
+    background-image: radial-gradient(ellipse at 20% 50%, #2a5298 0%, transparent 55%),
+                      radial-gradient(ellipse at 80% 20%, #0d47a1 0%, transparent 55%);
+    display: flex; justify-content: center; align-items: flex-start;
+    min-height: 100vh; padding: 20px;
   }
-  .msn-window { width: 290px; min-height: 600px; background: #fff; border: 1px solid #888; box-shadow: 3px 3px 10px rgba(0,0,0,.5); display: flex; flex-direction: column; animation: appear 0.2s ease; }
+
+  /* ── DESKTOP WINDOW ── */
+  .msn-window {
+    width: 290px; min-height: 600px; background: #fff;
+    border: 1px solid #888; box-shadow: 3px 3px 10px rgba(0,0,0,.5);
+    display: flex; flex-direction: column; animation: appear 0.2s ease;
+  }
   @keyframes appear { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
   .title-bar { height: 22px; background: linear-gradient(to bottom, #4a90d9 0%, #2563c0 50%, #1a4fa0 100%); display: flex; align-items: center; padding: 0 5px; gap: 4px; user-select: none; flex-shrink: 0; }
   .tb-text { color: #fff; font-size: 11px; font-weight: bold; flex: 1; text-shadow: 1px 1px rgba(0,0,0,.4); }
   .tb-btn { width: 16px; height: 14px; background: linear-gradient(to bottom, #e8e8e8, #b8b8b8); border: 1px solid #888; border-radius: 2px; cursor: pointer; font-size: 9px; font-weight: bold; display: flex; align-items: center; justify-content: center; color: #333; }
@@ -31,7 +42,6 @@
   .menu-bar { height: 18px; background: #ece9d8; border-bottom: 1px solid #aca899; display: flex; align-items: center; padding: 0 4px; gap: 2px; flex-shrink: 0; }
   .menu-item { font-size: 11px; color: #000; cursor: pointer; padding: 1px 6px; border-radius: 2px; white-space: nowrap; }
   .menu-item:hover { background: #316ac5; color: #fff; }
-  .menu-item.muted { color: #888; }
 
   .msn-header { background: linear-gradient(to bottom, #e8f0ff, #ccdaff); padding: 8px; border-bottom: 1px solid #99aacc; flex-shrink: 0; }
   .my-profile { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
@@ -104,6 +114,196 @@
   .msn-footer { height: 22px; background: linear-gradient(to bottom, #ece9d8, #d4d0c8); border-top: 1px solid #aca899; display: flex; align-items: center; padding: 0 6px; gap: 6px; flex-shrink: 0; }
   .f-btn { font-size: 10px; color: #333; cursor: pointer; padding: 1px 4px; border-radius: 2px; border: 1px solid transparent; }
   .f-btn:hover { border-color: #aaa; background: #fff; }
+
+  /* ═══════════════════════════════════
+     MOBILE LAYOUT — WhatsApp structure
+     MSN nostalgic colors & texture
+  ═══════════════════════════════════ */
+  @media (max-width: 768px) {
+    body {
+      padding: 0;
+      background: #1a3a6e;
+      align-items: stretch;
+      min-height: 100dvh;
+    }
+
+    .msn-window {
+      width: 100%; min-height: 100dvh; border: none; box-shadow: none;
+      border-radius: 0;
+    }
+
+    /* ── HEADER mobile: like WhatsApp topbar ── */
+    .title-bar { display: none; }
+    .menu-bar  { display: none; }
+
+    .msn-header {
+      background: linear-gradient(to bottom, #2563c0, #1a4fa0);
+      padding: 10px 12px 8px;
+      border-bottom: none;
+      padding-top: max(10px, env(safe-area-inset-top));
+    }
+    .my-profile { margin-bottom: 0; gap: 10px; }
+
+    .avatar-wrap { width: 42px; height: 42px; }
+    .avatar { width: 42px; height: 42px; font-size: 22px; border-color: rgba(255,255,255,0.4); }
+    .status-dot { border-color: #1a4fa0; }
+
+    .my-name  { font-size: 15px; color: #fff; font-weight: bold; }
+    .my-msg   { font-size: 11px; color: rgba(255,255,255,0.75); }
+    .my-msg:hover { color: #fff; }
+
+    .status-sel {
+      font-size: 11px; margin-top: 2px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff; border-radius: 12px; padding: 2px 8px;
+      width: auto;
+    }
+    .status-sel option { color: #000; background: #fff; }
+
+    /* Mobile action buttons replacing menu-bar */
+    .mobile-actions {
+      display: flex !important;
+      gap: 6px; margin-left: auto; align-items: center;
+    }
+    .mob-btn {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; cursor: pointer; color: #fff;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mob-btn:active { background: rgba(255,255,255,0.3); }
+
+  /* Hidden on desktop, shown via media query */
+  .mobile-actions { display: none; }
+
+    /* ── TABS mobile ── */
+    .nav-tabs {
+      background: #1a4fa0;
+      border-bottom: none;
+    }
+    .nav-tab {
+      color: rgba(255,255,255,0.65);
+      font-size: 12px;
+      padding: 10px 0;
+      border-bottom: 3px solid transparent;
+    }
+    .nav-tab.active {
+      background: transparent;
+      color: #fff;
+      border-bottom: 3px solid #fff;
+      font-weight: bold;
+    }
+    .nav-tab:hover { background: rgba(255,255,255,0.1); }
+    .badge { top: 4px; right: 10px; font-size: 9px; }
+
+    /* ── SEARCH mobile ── */
+    .search-bar {
+      background: #f0f4ff;
+      border-bottom: 1px solid #dde4f4;
+      padding: 6px 10px;
+    }
+    .search-input {
+      border-radius: 18px; border: 1px solid #c8d4ee;
+      padding: 5px 12px; font-size: 13px;
+      background: #fff;
+    }
+
+    /* ── CONTACT LIST mobile — WhatsApp style ── */
+    .list-area { background: #f5f7ff; }
+    .list-area::-webkit-scrollbar { display: none; }
+
+    .group-header {
+      background: #e8ecf8;
+      border-top: none;
+      border-bottom: 1px solid #dde4f4;
+      padding: 4px 14px;
+    }
+    .group-name { font-size: 12px; color: #1a4fa0; }
+    .group-count { color: #1a4fa0; opacity: 0.7; }
+    .group-arrow { color: #1a4fa0; }
+
+    .contact-item {
+      padding: 10px 14px;
+      gap: 12px;
+      border-bottom: 1px solid #eaeef8;
+      background: #fff;
+      align-items: center;
+      min-height: 64px;
+    }
+    .contact-item:active { background: #e8f0ff; }
+
+    .contact-avatar {
+      width: 46px; height: 46px; border-radius: 50%;
+      font-size: 22px; border: 2px solid #c8d4ee;
+      flex-shrink: 0;
+    }
+    .c-dot {
+      width: 12px; height: 12px;
+      border: 2px solid #fff;
+      bottom: 0; right: 0;
+    }
+    .contact-info { gap: 2px; }
+    .c-name { font-size: 14px; color: #111; }
+    .c-msg  { font-size: 12px; }
+    .c-name-bold { font-size: 14px; font-weight: 700; color: #000; }
+
+    /* Last message row mobile */
+    .lm-row { font-size: 12px; margin-top: 2px; }
+    .lm-text { color: #666; }
+    .lm-time { font-size: 11px; color: #aaa; }
+    .lm-read { font-size: 11px; }
+    .lm-unread-dot { width: 9px; height: 9px; }
+
+    /* ── REQUESTS mobile ── */
+    .request-item {
+      padding: 12px 14px; gap: 12px;
+      background: #fff; border-bottom: 1px solid #eaeef8;
+    }
+    .req-avatar { width: 46px; height: 46px; border-radius: 50%; font-size: 22px; }
+    .req-name { font-size: 14px; }
+    .req-sub  { font-size: 12px; margin-top: 2px; }
+    .req-btn  { padding: 5px 12px; font-size: 12px; border-radius: 14px; }
+
+    /* ── ADD CONTACT mobile ── */
+    .add-bar {
+      background: #fff;
+      border-top: 1px solid #dde4f4;
+      padding: 8px 12px;
+      padding-bottom: max(8px, env(safe-area-inset-bottom));
+    }
+    .add-input {
+      border-radius: 20px; padding: 8px 14px;
+      font-size: 13px; border-color: #c8d4ee;
+    }
+    .add-btn {
+      border-radius: 20px; padding: 0 16px;
+      font-size: 12px; height: 34px;
+    }
+
+    /* ── FOOTER mobile → hidden (replaced by header actions) ── */
+    .msn-footer { display: none; }
+
+    /* ── MODALS mobile ── */
+    .modal { width: 92vw; max-width: 380px; }
+    .m-input { font-size: 14px; padding: 8px 10px; }
+    .m-btn   { font-size: 13px; padding: 6px 18px; }
+    .emoji-opt { font-size: 24px; }
+    .photo-preview { width: 64px; height: 64px; font-size: 32px; }
+
+    /* ── INSTALL BANNER mobile ── */
+    .install-banner {
+      width: 100% !important;
+      border-left: none; border-right: none; border-top: 1px solid #6688cc;
+      padding: 10px 14px;
+      padding-bottom: max(10px, env(safe-area-inset-bottom));
+    }
+    .install-banner-text b { font-size: 13px; }
+    .install-banner-text { font-size: 12px; }
+    .install-btn { padding: 6px 14px; font-size: 12px; border-radius: 14px; }
+  }
 
   /* NOTIF POPUP */
   .notif-popup { position: fixed; bottom: 20px; right: 20px; z-index: 500; background: linear-gradient(to bottom, #e8f0ff, #ccdaff); border: 1px solid #6688cc; padding: 10px 14px 10px 10px; box-shadow: 2px 2px 8px rgba(0,0,0,.3); font-size: 11px; display: none; max-width: 240px; cursor: pointer; }
@@ -236,6 +436,11 @@
           <option value="busy">🔴 Ocupado</option>
           <option value="offline">⚫ Aparecer off</option>
         </select>
+      </div>
+      <div class="mobile-actions">
+        <div class="mob-btn" onclick="openNotifSettings()" title="Notificações">🔔</div>
+        <div class="mob-btn" onclick="toggleMute()" id="mobMuteBtn" title="Silenciar">🔔</div>
+        <div class="mob-btn" onclick="openEdit()" title="Perfil">✏️</div>
       </div>
     </div>
   </div>
@@ -432,6 +637,8 @@ function syncNotifUI() {
   const muteBtn = document.getElementById('muteBtn');
   muteBtn.textContent = notifSettings.muted ? '🔕' : '🔔';
   muteBtn.title = notifSettings.muted ? 'Ativar notificações' : 'Silenciar notificações';
+  const mobMute = document.getElementById('mobMuteBtn');
+  if (mobMute) { mobMute.textContent = notifSettings.muted ? '🔕' : '🔔'; }
 }
 
 window.toggleMute = function() {
