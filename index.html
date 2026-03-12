@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Messenger Online — Entrar</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Tahoma&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Tahoma', Arial, sans-serif;
+    font-size: 12px;
+    min-height: 100vh;
+    background: #1a3a6e;
+    background-image:
+      radial-gradient(ellipse at 20% 50%, #2a5298 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 20%, #0d47a1 0%, transparent 55%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  /* ===== WINDOW ===== */
+  .window {
+    width: 320px;
+    background: #fff;
+    border: 1px solid #888;
+    box-shadow: 3px 3px 12px rgba(0,0,0,0.6), inset 0 0 0 1px #ddd;
+    animation: appear 0.25s ease;
+  }
+  @keyframes appear {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .title-bar {
+    height: 22px;
+    background: linear-gradient(to bottom, #4a90d9 0%, #2563c0 50%, #1a4fa0 100%);
+    display: flex; align-items: center; padding: 0 5px; gap: 4px;
+    user-select: none;
+  }
+  .tb-icon { font-size: 12px; }
+  .tb-text { color: #fff; font-size: 11px; font-weight: bold; flex: 1; text-shadow: 1px 1px rgba(0,0,0,.4); }
+  .tb-btn {
+    width: 16px; height: 14px;
+    background: linear-gradient(to bottom, #e8e8e8, #b8b8b8);
+    border: 1px solid #888; border-radius: 2px;
+    cursor: pointer; font-size: 9px; font-weight: bold;
+    display: flex; align-items: center; justify-content: center; color: #333;
+  }
+  .tb-btn:hover { background: linear-gradient(to bottom, #fff, #ccc); }
+
+  /* ===== LOGO AREA ===== */
+  .logo-area {
+    background: linear-gradient(135deg, #1a4fa0 0%, #2563c0 50%, #4a90d9 100%);
+    padding: 20px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .logo-butterfly {
+    width: 52px; height: 52px;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 3px; padding: 4px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+  .logo-butterfly div { border-radius: 50% 0; }
+  .lb-r { background: #ff4444; }
+  .lb-g { background: #44cc44; transform: rotate(90deg); border-radius: 50% 0; }
+  .lb-b { background: #4488ff; transform: rotate(270deg); border-radius: 50% 0; }
+  .lb-y { background: #ffaa00; transform: rotate(180deg); border-radius: 50% 0; }
+  .logo-text h1 { color: #fff; font-size: 18px; font-weight: bold; text-shadow: 1px 1px 3px rgba(0,0,0,.4); }
+  .logo-text p  { color: rgba(255,255,255,0.8); font-size: 10px; margin-top: 2px; }
+
+  /* ===== TABS ===== */
+  .tabs {
+    display: flex;
+    background: #ece9d8;
+    border-bottom: 1px solid #aca899;
+  }
+  .tab {
+    flex: 1; padding: 5px 0; text-align: center;
+    font-size: 11px; cursor: pointer; color: #333;
+    border-bottom: 2px solid transparent;
+    transition: all 0.1s;
+  }
+  .tab:hover { background: #ddd; }
+  .tab.active {
+    background: #fff; color: #003399; font-weight: bold;
+    border-bottom: 2px solid #4a90d9;
+  }
+
+  /* ===== FORM ===== */
+  .form-area { padding: 16px; background: #fff; }
+
+  .form-section { display: none; }
+  .form-section.active { display: flex; flex-direction: column; gap: 10px; }
+
+  .field-group { display: flex; flex-direction: column; gap: 3px; }
+  .field-label { font-size: 11px; color: #333; }
+  .field-input {
+    border: 1px solid #aaa; padding: 4px 6px;
+    font-size: 11px; font-family: inherit;
+    background: #fff; outline: none;
+    transition: border-color 0.15s;
+  }
+  .field-input:focus { border-color: #4a90d9; box-shadow: 0 0 0 2px rgba(74,144,217,0.2); }
+
+  .remember-row {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; color: #444; cursor: pointer;
+  }
+  .remember-row input { cursor: pointer; }
+
+  .btn-primary {
+    background: linear-gradient(to bottom, #4a90d9, #1a4fa0);
+    color: #fff; border: 1px solid #1a4fa0;
+    padding: 5px 0; font-family: inherit; font-size: 12px;
+    font-weight: bold; cursor: pointer; border-radius: 2px;
+    transition: background 0.1s;
+  }
+  .btn-primary:hover { background: linear-gradient(to bottom, #5aa0e9, #2a5fb0); }
+  .btn-primary:active { background: linear-gradient(to bottom, #1a4fa0, #0d3580); }
+  .btn-primary:disabled { background: #aaa; border-color: #888; cursor: not-allowed; }
+
+  .error-msg {
+    display: none;
+    background: #fff0f0; border: 1px solid #ffaaaa;
+    padding: 5px 8px; font-size: 11px; color: #cc0000;
+  }
+  .error-msg.show { display: block; }
+
+  .success-msg {
+    display: none;
+    background: #f0fff0; border: 1px solid #aaffaa;
+    padding: 5px 8px; font-size: 11px; color: #006600;
+  }
+  .success-msg.show { display: block; }
+
+  .divider {
+    height: 1px; background: #ddd; margin: 4px 0;
+  }
+
+  .hint { font-size: 10px; color: #888; }
+
+  /* ===== FOOTER ===== */
+  .window-footer {
+    background: #ece9d8; border-top: 1px solid #aca899;
+    padding: 4px 8px; font-size: 10px; color: #666;
+    text-align: center;
+  }
+  .window-footer a { color: #003399; text-decoration: none; }
+  .window-footer a:hover { text-decoration: underline; }
+
+  /* ===== LOADING SPINNER ===== */
+  .spinner {
+    display: inline-block; width: 10px; height: 10px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff; border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    vertical-align: middle; margin-right: 4px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .version-text { color: rgba(255,255,255,0.5); font-size: 10px; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="window">
+
+  <!-- Title Bar -->
+  <div class="title-bar">
+    <span class="tb-icon">🦋</span>
+    <span class="tb-text">Messenger Online</span>
+    <div class="tb-btn">_</div>
+    <div class="tb-btn">□</div>
+    <div class="tb-btn" style="color:#c00;">✕</div>
+  </div>
+
+  <!-- Logo -->
+  <div class="logo-area">
+    <div class="logo-butterfly">
+      <div class="lb-r"></div>
+      <div class="lb-g"></div>
+      <div class="lb-b"></div>
+      <div class="lb-y"></div>
+    </div>
+    <div class="logo-text">
+      <h1>Messenger</h1>
+      <p>Conecte-se com seus amigos</p>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <div class="tab active" id="tab-login" onclick="switchTab('login')">Entrar</div>
+    <div class="tab" id="tab-register" onclick="switchTab('register')">Criar conta</div>
+  </div>
+
+  <!-- Form Area -->
+  <div class="form-area">
+
+    <!-- LOGIN -->
+    <div class="form-section active" id="section-login">
+      <div class="field-group">
+        <label class="field-label" for="login-user">Nome de usuário:</label>
+        <input class="field-input" type="text" id="login-user" placeholder="seu_usuario" autocomplete="username">
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="login-pass">Senha:</label>
+        <input class="field-input" type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <label class="remember-row">
+        <input type="checkbox" id="remember-me"> Lembrar minha senha
+      </label>
+      <div class="error-msg" id="login-error"></div>
+      <button class="btn-primary" id="btn-login" onclick="doLogin()">Entrar</button>
+      <div class="hint">Esqueceu a senha? <a href="#" onclick="alert('Recuperação por e-mail não disponível nesta versão.')">Clique aqui</a></div>
+    </div>
+
+    <!-- REGISTER -->
+    <div class="form-section" id="section-register">
+      <div class="field-group">
+        <label class="field-label" for="reg-user">Nome de usuário:</label>
+        <input class="field-input" type="text" id="reg-user" placeholder="apenas letras, números e _" autocomplete="username">
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="reg-display">Nome de exibição:</label>
+        <input class="field-input" type="text" id="reg-display" placeholder="Como você aparece para os outros">
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="reg-pass">Senha:</label>
+        <input class="field-input" type="password" id="reg-pass" placeholder="mínimo 6 caracteres" autocomplete="new-password">
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="reg-pass2">Confirmar senha:</label>
+        <input class="field-input" type="password" id="reg-pass2" placeholder="repita a senha" autocomplete="new-password">
+      </div>
+      <div class="error-msg" id="reg-error"></div>
+      <div class="success-msg" id="reg-success"></div>
+      <button class="btn-primary" id="btn-register" onclick="doRegister()">Criar conta</button>
+    </div>
+
+  </div>
+
+  <div class="window-footer">
+    Messenger Online &copy; 2024 &nbsp;|&nbsp; <a href="#">Termos de uso</a>
+  </div>
+</div>
+
+<span class="version-text">v1.0 — GitHub Pages + Firebase</span>
+
+<script type="module">
+import { auth, db, rtdb } from './js/firebase-config.js';
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+  doc, setDoc, getDoc, query, collection, where, getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { ref, set, onDisconnect, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+// Redirect if already logged in
+onAuthStateChanged(auth, user => {
+  if (user) window.location.href = 'pages/home.html';
+});
+
+// ===== TAB SWITCH =====
+window.switchTab = function(tab) {
+  document.getElementById('section-login').classList.toggle('active', tab === 'login');
+  document.getElementById('section-register').classList.toggle('active', tab === 'register');
+  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+  clearErrors();
+};
+
+function clearErrors() {
+  ['login-error','reg-error','reg-success'].forEach(id => {
+    document.getElementById(id).classList.remove('show');
+    document.getElementById(id).textContent = '';
+  });
+}
+
+function showError(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+function setLoading(btnId, loading) {
+  const btn = document.getElementById(btnId);
+  if (loading) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Aguarde...';
+  } else {
+    btn.disabled = false;
+    btn.innerHTML = btnId === 'btn-login' ? 'Entrar' : 'Criar conta';
+  }
+}
+
+// ===== LOGIN =====
+window.doLogin = async function() {
+  const username = document.getElementById('login-user').value.trim().toLowerCase();
+  const password = document.getElementById('login-pass').value;
+  const remember  = document.getElementById('remember-me').checked;
+
+  clearErrors();
+  if (!username || !password) { showError('login-error', 'Preencha todos os campos.'); return; }
+
+  setLoading('btn-login', true);
+  try {
+    // Username → email mapping
+    const q = query(collection(db, 'usernames'), where('username', '==', username));
+    const snap = await getDocs(q);
+    if (snap.empty) { showError('login-error', 'Usuário não encontrado.'); setLoading('btn-login', false); return; }
+
+    const email = snap.docs[0].data().email;
+    await setPersistence(auth, remember ? browserLocalPersistence : browserSessionPersistence);
+    await signInWithEmailAndPassword(auth, email, password);
+    // onAuthStateChanged will redirect
+  } catch(e) {
+    const msgs = {
+      'auth/wrong-password': 'Senha incorreta.',
+      'auth/too-many-requests': 'Muitas tentativas. Tente mais tarde.',
+      'auth/user-disabled': 'Conta desativada.',
+    };
+    showError('login-error', msgs[e.code] || 'Erro ao entrar. Tente novamente.');
+    setLoading('btn-login', false);
+  }
+};
+
+// ===== REGISTER =====
+window.doRegister = async function() {
+  const username = document.getElementById('reg-user').value.trim().toLowerCase();
+  const display  = document.getElementById('reg-display').value.trim();
+  const pass     = document.getElementById('reg-pass').value;
+  const pass2    = document.getElementById('reg-pass2').value;
+
+  clearErrors();
+
+  if (!username || !display || !pass || !pass2)
+    { showError('reg-error', 'Preencha todos os campos.'); return; }
+  if (!/^[a-z0-9_]{3,20}$/.test(username))
+    { showError('reg-error', 'Usuário: 3-20 caracteres, só letras, números e _.'); return; }
+  if (pass.length < 6)
+    { showError('reg-error', 'A senha deve ter pelo menos 6 caracteres.'); return; }
+  if (pass !== pass2)
+    { showError('reg-error', 'As senhas não coincidem.'); return; }
+
+  setLoading('btn-register', true);
+  try {
+    // Check username availability
+    const q = query(collection(db, 'usernames'), where('username', '==', username));
+    const snap = await getDocs(q);
+    if (!snap.empty) { showError('reg-error', 'Nome de usuário já em uso.'); setLoading('btn-register', false); return; }
+
+    // Firebase Auth uses email internally — we fake one
+    const fakeEmail = `${username}@messenger.local`;
+    const cred = await createUserWithEmailAndPassword(auth, fakeEmail, pass);
+    const uid  = cred.user.uid;
+
+    // Save user profile
+    await setDoc(doc(db, 'users', uid), {
+      username, display, uid,
+      emoji: '😊',
+      message: 'Olá! Estou usando o Messenger Online.',
+      status: 'online',
+      createdAt: new Date().toISOString()
+    });
+
+    // Save username → email map
+    await setDoc(doc(db, 'usernames', username), { username, email: fakeEmail, uid });
+
+    // Will redirect via onAuthStateChanged
+  } catch(e) {
+    const msgs = {
+      'auth/email-already-in-use': 'Nome de usuário já cadastrado.',
+      'auth/weak-password': 'Senha muito fraca.',
+    };
+    showError('reg-error', msgs[e.code] || 'Erro ao criar conta: ' + e.message);
+    setLoading('btn-register', false);
+  }
+};
+
+// Enter key support
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const active = document.querySelector('.form-section.active');
+    if (active.id === 'section-login') window.doLogin();
+    else window.doRegister();
+  }
+});
+</script>
+</body>
+</html>
