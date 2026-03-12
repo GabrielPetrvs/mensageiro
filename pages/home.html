@@ -602,14 +602,16 @@ window.sendRequest = async function() {
   if (!username) return;
   if (username === myData?.username) { showToast('Você não pode se adicionar.'); return; }
 
-  const q = query(collection(db, 'usernames'), where('username', '==', username));
-  const snap = await getDocs(q);
-  if (snap.empty) { showToast('Usuário não encontrado: @' + username); return; }
+  // Busca direto pelo ID do documento (username é o ID)
+  const unameSnap = await getDoc(doc(db, 'usernames', username));
+  if (!unameSnap.exists()) { showToast('Usuário não encontrado: @' + username); return; }
 
-  const targetUid = snap.docs[0].data().uid;
+  const targetUid = unameSnap.data().uid;
   if (contactsData[targetUid]) { showToast('Contato já adicionado.'); return; }
 
   const targetSnap = await getDoc(doc(db, 'users', targetUid));
+  if (!targetSnap.exists()) { showToast('Usuário não encontrado.'); return; }
+
   const pending = targetSnap.data()?.pendingRequests || [];
   if (pending.includes(myUid)) { showToast('Pedido já enviado.'); return; }
 
