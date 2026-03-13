@@ -188,152 +188,134 @@ body{
 .tb-btn:hover{background:linear-gradient(to bottom,#fff,#d8d8d8);border-color:#555}
 .tb-btn.close:hover{background:linear-gradient(to bottom,#ff6060,#cc0000);color:#fff;border-color:#990000}
 
-/* ── WLM name bar: name + status under title, like a sub-header ── */
-/* In WLM 2009 this shows "Fernanda ● Online" on a light grey bar */
+/* ── WLM name bar ── */
+/* WLM 2011: single grey line "Fernanda › 🟢 Online", very thin */
 .name-bar{
-  height:20px;flex-shrink:0;
-  background:linear-gradient(to bottom,#f2f0ea,#e8e4d8);
-  border-bottom:2px solid #c8c4b8;
-  display:flex;align-items:center;padding:0 10px;gap:8px;
+  height:18px;flex-shrink:0;
+  background:linear-gradient(to bottom,#eeecE6,#e4e0d4);
+  border-bottom:1px solid #c4c0b8;
+  display:flex;align-items:center;padding:0 9px;gap:6px;
 }
 .nb-name{font-size:11px;font-weight:bold;color:#003399}
-.nb-sep{color:#c8c4b8;font-size:12px}
-.nb-status{font-size:10px}
+.nb-sep{color:#bbb;font-size:10px}
+.nb-status{font-size:10px;display:flex;align-items:center;gap:3px}
 .nb-dot{
-  display:inline-block;width:8px;height:8px;border-radius:50%;
-  margin-right:3px;vertical-align:middle;border:1px solid rgba(0,0,0,.15);
+  display:inline-block;width:7px;height:7px;border-radius:50%;
+  border:1px solid rgba(0,0,0,.15);vertical-align:middle;
 }
 
 /* ── Messages area ── */
-/* WLM 2009: pure white background, no gradients */
 .messages-area{
   flex:1;overflow-y:auto;
   background:#fff;
-  padding:4px 0 6px;
+  padding:2px 0 4px;
   min-height:0;
 }
-/* WLM classic Windows XP scrollbar: wide, grey, raised */
+/* WLM XP scrollbar */
 .messages-area::-webkit-scrollbar{width:16px}
-.messages-area::-webkit-scrollbar-track{
-  background:linear-gradient(to right,#e8e8e8,#f0f0f0);
-  border-left:1px solid #c8c8c8;
-}
+.messages-area::-webkit-scrollbar-track{background:#f0f0f0;border-left:1px solid #c8c8c8}
 .messages-area::-webkit-scrollbar-thumb{
-  background:linear-gradient(to bottom,#d0d0d0 0%,#c0c0c0 50%,#b0b0b0 100%);
+  background:linear-gradient(to bottom,#d0d0d0,#b8b8b8);
   border:1px solid #909090;
-  border-radius:1px;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.5);
 }
-.messages-area::-webkit-scrollbar-thumb:hover{
-  background:linear-gradient(to bottom,#c0c0c0,#a8a8a8);
-}
-.messages-area::-webkit-scrollbar-button{
-  display:block;height:16px;
-  background:linear-gradient(to bottom,#e0e0e0,#c8c8c8);
-  border:1px solid #909090;
-}
+.messages-area::-webkit-scrollbar-thumb:hover{background:linear-gradient(to bottom,#c0c0c0,#a8a8a8)}
+.messages-area::-webkit-scrollbar-button{display:block;height:16px;background:linear-gradient(to bottom,#e0e0e0,#c8c8c8);border:1px solid #909090}
 
 /* ── Date separator ── */
 .date-sep{
-  display:flex;align-items:center;gap:10px;
-  padding:6px 16px;font-size:9px;color:#bbb;
+  display:flex;align-items:center;gap:8px;
+  padding:4px 12px;font-size:9px;color:#ccc;
 }
-.date-sep::before,.date-sep::after{
-  content:'';flex:1;height:1px;background:#e8e8e8;
-}
+.date-sep::before,.date-sep::after{content:'';flex:1;height:1px;background:#ebebeb}
 
-/* ── System / nudge / wink ── */
-/* WLM style: icon + italic text, slightly grey row */
+/* ── System / nudge / wink ──
+   WLM: very compact, inline, no vertical padding waste */
 .msg-system{
-  display:flex;align-items:center;justify-content:center;gap:5px;
-  padding:5px 14px;font-size:10px;color:#888;font-style:italic;
-  background:#fafafa;
-  border-top:1px solid #f0f0f0;border-bottom:1px solid #f0f0f0;
-  margin:2px 0;line-height:1.4;
+  text-align:center;padding:2px 12px;
+  font-size:10px;color:#999;font-style:italic;
+  line-height:1.4;
 }
-/* Nudge special style — orange accent like WLM */
+/* Nudge: WLM orange row, compact */
 .msg-nudge{
-  display:flex;align-items:center;justify-content:center;gap:5px;
-  padding:5px 14px;font-size:10px;
-  color:#c85000;font-style:italic;
-  background:#fff8f4;
-  border-top:1px solid #f0d8c8;border-bottom:1px solid #f0d8c8;
-  margin:2px 0;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:3px 12px;
+  font-size:11px;color:#c85000;font-style:italic;
+  background:#fff6f0;
+  border-top:1px solid #f0ddd0;border-bottom:1px solid #f0ddd0;
+  margin:1px 0;
 }
-.msg-nudge-icon{font-size:14px}
+.msg-nudge-icon{font-size:15px;flex-shrink:0}
 .msg-wink{
-  display:flex;align-items:center;justify-content:center;gap:5px;
-  padding:5px 14px;font-size:10px;
-  color:#6644aa;font-style:italic;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:3px 12px;font-size:11px;color:#6644aa;font-style:italic;
   background:#f8f4ff;
-  border-top:1px solid #e0d0f8;border-bottom:1px solid #e0d0f8;
-  margin:2px 0;
+  border-top:1px solid #e4d8f8;border-bottom:1px solid #e4d8f8;
+  margin:1px 0;
 }
 
-/* ── Message rows: WLM 2009 plain text style ── */
-/* NO bubbles. Avatar square left/right, name bold in sender color, plain text below */
+/* ── Message rows: WLM 2011 compact plain-text ──
+   Key insight: no bubble, avatar 30px, very tight padding,
+   consecutive messages from same sender share ONE avatar+name block */
 .msg-row{
-  display:flex;align-items:flex-start;gap:8px;
-  padding:4px 14px 2px;
+  display:flex;align-items:flex-start;gap:6px;
+  /* WLM: left margin puts avatar ~50px from edge, like the screenshot */
+  padding:2px 10px 0;
 }
 .msg-row.mine{flex-direction:row-reverse}
+/* Extra top spacing only between DIFFERENT senders */
+.msg-row.new-sender{margin-top:6px}
 
-/* Avatar: square, rounded 3px, 1px border — WLM pixel art look */
+/* Avatar: 30×30 square, light blue bg, 1px border */
 .msg-av{
-  width:32px;height:32px;
+  width:30px;height:30px;
   border-radius:3px;
-  border:1px solid #b8c8e4;
-  background:linear-gradient(135deg,#7aacee,#aac4ff);
+  border:1px solid #b0c4e0;
+  background:linear-gradient(135deg,#6e9ee4,#9bbcff);
   display:flex;align-items:center;justify-content:center;
-  font-size:17px;overflow:hidden;flex-shrink:0;
+  font-size:15px;overflow:hidden;flex-shrink:0;
   margin-top:1px;
-  box-shadow:1px 1px 3px rgba(0,0,0,.15);
 }
 .msg-av img{width:100%;height:100%;object-fit:cover}
+/* Hide avatar for non-first messages in same group */
+.msg-av.hidden{visibility:hidden}
 
-.msg-block{flex:1;min-width:0;max-width:78%}
+.msg-block{flex:1;min-width:0;max-width:80%}
 
-/* Name + time on same line, WLM style */
+/* Name + time: only shown on first msg of group */
 .msg-meta{
-  display:flex;align-items:baseline;gap:7px;
-  margin-bottom:1px;
+  display:flex;align-items:baseline;gap:6px;
+  margin-bottom:0;line-height:1.3;
 }
 .msg-sender{font-weight:bold;font-size:11px}
 .msg-time{font-size:9px;color:#aaa}
 
-/* Each message line — plain text, no box */
+/* Message text line — plain, tight */
 .msg-line{
-  font-size:11px;color:#1a1a1a;
-  line-height:1.55;
-  padding:0 0 1px;
-  display:flex;align-items:flex-end;gap:5px;
+  font-size:11px;color:#111;
+  line-height:1.45;padding:0;
+  display:flex;align-items:flex-end;gap:4px;
   word-break:break-word;
 }
-/* Mine messages: slightly indented from right side */
-.msg-row.mine .msg-block{text-align:left}
 
-/* Read receipts: WLM blue check marks */
+/* Read receipts */
 .msg-read{font-size:9px;color:#3388cc;flex-shrink:0;letter-spacing:-1px}
-.msg-read.unsent{color:#bbb}
+.msg-read.unsent{color:#ccc}
 
 /* Images and files */
 .msg-img{
-  max-width:200px;max-height:160px;
-  cursor:pointer;
-  border:1px solid #ccd8ee;
-  display:block;margin:2px 0;
-  box-shadow:1px 1px 4px rgba(0,0,0,.12);
+  max-width:180px;max-height:140px;
+  cursor:pointer;border:1px solid #ccd8ee;
+  display:block;margin:1px 0;
 }
 .msg-img:hover{border-color:#4a90d9;opacity:.94}
 .msg-file{
   display:inline-flex;align-items:center;gap:5px;
-  padding:3px 9px;
-  background:linear-gradient(to bottom,#f0f4ff,#e4ecff);
-  border:1px solid #b8cce8;
+  padding:2px 8px;
+  background:#f0f4ff;border:1px solid #b8cce8;
   cursor:pointer;color:#003399;font-size:10px;
-  box-shadow:1px 1px 3px rgba(0,0,0,.1);
 }
-.msg-file:hover{background:linear-gradient(to bottom,#e0ecff,#d0e4ff)}
+.msg-file:hover{background:#dce8ff}
 
 /* ══════════════════════════════════════
    INPUT AREA — WLM XP/Vista style
@@ -915,6 +897,8 @@ async function markRead(docs){
 }
 
 // ── Render messages ──
+// WLM 2011: each message = one row. Avatar shown only on first of consecutive.
+// Name shown only on first. Subsequent lines tight, avatar invisible (keeps spacing).
 function renderMsgs(docs,skipScroll){
   const area=document.getElementById('messagesArea');
   const atBottom=area.scrollHeight-area.scrollTop-area.clientHeight<90;
@@ -923,109 +907,106 @@ function renderMsgs(docs,skipScroll){
     area.innerHTML='<div class="msg-system">Início da conversa. Diga olá! 👋</div>';return;
   }
 
-  // Group consecutive same-sender, with date separators
-  const groups=[];
-  let lastDate='';
+  // Flatten into render items with date seps and special msgs
+  const items=[];
+  let lastDate='',lastSenderUid='',lastType='';
   docs.forEach(d=>{
     const data=d.data();
     const mine=data.senderUid===myUid;
+    const isSpecial=data.type==='nudge'||data.type==='wink'||data.type==='system';
+
     const dateStr=data.createdAt?.toDate
       ?data.createdAt.toDate().toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'}):'';
-    if(dateStr&&dateStr!==lastDate){groups.push({type:'date',label:dateStr});lastDate=dateStr}
+    if(dateStr&&dateStr!==lastDate){
+      items.push({kind:'date',label:dateStr});
+      lastDate=dateStr;lastSenderUid='';lastType='';
+    }
 
-    const isSpecial=data.type==='nudge'||data.type==='wink'||data.type==='system';
     if(isSpecial){
-      groups.push({type:data.type,text:data.text});return;
+      items.push({kind:data.type,text:data.text});
+      lastSenderUid='';lastType='special';return;
     }
-    const last=groups[groups.length-1];
-    if(last&&last.type==='msg'&&last.mine===mine){
-      last.msgs.push({data,id:d.id});
-    } else {
-      groups.push({type:'msg',mine,msgs:[{data,id:d.id}]});
-    }
+
+    // Is this the first message of a sender block?
+    const isFirst=(data.senderUid!==lastSenderUid)||lastType==='special';
+    items.push({kind:'msg',data,id:d.id,mine,isFirst});
+    lastSenderUid=data.senderUid;lastType='msg';
   });
 
-  groups.forEach(grp=>{
-    // Date separator
-    if(grp.type==='date'){
-      const div=document.createElement('div');div.className='date-sep';div.textContent=grp.label;
-      area.appendChild(div);return;
+  items.forEach(item=>{
+    if(item.kind==='date'){
+      const d=document.createElement('div');d.className='date-sep';d.textContent=item.label;
+      area.appendChild(d);return;
     }
-    // Nudge
-    if(grp.type==='nudge'){
-      const div=document.createElement('div');div.className='msg-nudge';
-      div.innerHTML=`<span class="msg-nudge-icon">📳</span><span>${escHtml(grp.text)}</span>`;
-      area.appendChild(div);return;
+    if(item.kind==='nudge'){
+      const d=document.createElement('div');d.className='msg-nudge';
+      d.innerHTML=`<span class="msg-nudge-icon">📳</span><span>${escHtml(item.text)}</span>`;
+      area.appendChild(d);return;
     }
-    // Wink
-    if(grp.type==='wink'){
-      const div=document.createElement('div');div.className='msg-wink';
-      div.innerHTML=`<span>✨</span><span>${escHtml(grp.text)}</span>`;
-      area.appendChild(div);return;
+    if(item.kind==='wink'){
+      const d=document.createElement('div');d.className='msg-wink';
+      d.innerHTML=`<span>✨</span><span>${escHtml(item.text)}</span>`;
+      area.appendChild(d);return;
     }
-    // System
-    if(grp.type==='system'){
-      const div=document.createElement('div');div.className='msg-system';
-      div.textContent=grp.text;area.appendChild(div);return;
+    if(item.kind==='system'){
+      const d=document.createElement('div');d.className='msg-system';d.textContent=item.text;
+      area.appendChild(d);return;
     }
 
-    // Regular message group
-    const{mine,msgs}=grp;
+    // Regular message
+    const{data,mine,isFirst}=item;
     const sender=mine?myData:otherData;
-    // WLM: sender name in their chosen color (or default red for me, blue for them)
     const nameColor=mine?(myData?.nameColor||'#cc0000'):(otherData?.nameColor||'#0033cc');
     const avHtml=sender?.photoBase64
-      ?`<img src="${sender.photoBase64}" alt="">`
-      :(sender?.emoji||'😊');
+      ?`<img src="${sender.photoBase64}" alt="">`:(sender?.emoji||'😊');
 
+    // Row: add 'new-sender' margin-top only on first of a block
     const row=document.createElement('div');
-    row.className='msg-row'+(mine?' mine':'');
+    row.className='msg-row'+(mine?' mine':'')+(isFirst?' new-sender':'');
 
-    // Avatar
+    // Avatar: visible only on first msg of block
     const av=document.createElement('div');
-    av.className='msg-av';av.innerHTML=avHtml;
+    av.className='msg-av'+(isFirst?'':' hidden');
+    av.innerHTML=avHtml;
 
-    // Block (name header + lines)
-    const block=document.createElement('div');
-    block.className='msg-block';
+    // Block
+    const block=document.createElement('div');block.className='msg-block';
 
-    // Name + time header
-    const firstData=msgs[0].data;
-    const t=firstData.createdAt?.toDate
-      ?firstData.createdAt.toDate().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'';
-    const meta=document.createElement('div');meta.className='msg-meta';
-    meta.innerHTML=`<span class="msg-sender" style="color:${nameColor}">${escHtml(sender?.display||sender?.username||'?')}</span><span class="msg-time">${t}</span>`;
-    block.appendChild(meta);
+    // Name + time: only on first msg of block
+    if(isFirst){
+      const t=data.createdAt?.toDate
+        ?data.createdAt.toDate().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'';
+      const meta=document.createElement('div');meta.className='msg-meta';
+      meta.innerHTML=`<span class="msg-sender" style="color:${nameColor}">${escHtml(sender?.display||sender?.username||'?')}</span><span class="msg-time">${t}</span>`;
+      block.appendChild(meta);
+    }
 
-    // Message lines
-    msgs.forEach(({data,id})=>{
-      let content='';
-      if(data.type==='image'){
-        content=`<img class="msg-img" src="${data.imageBase64}" alt="imagem" onclick="openLightbox('${data.imageBase64}')">`;
-      } else if(data.type==='file'){
-        content=`<span class="msg-file" onclick="downloadFile('${data.fileName}','${data.fileBase64}')">📎 ${escHtml(data.fileName)}</span>`;
-      } else {
-        let txt=escHtml(data.text||'');
-        if(data.bold)txt=`<b>${txt}</b>`;
-        if(data.italic)txt=`<i>${txt}</i>`;
-        if(data.underline)txt=`<u>${txt}</u>`;
-        content=txt.replace(/\n/g,'<br>');
-      }
-      const style=[];
-      if(data.fontFamily&&data.fontFamily!=='Tahoma')style.push(`font-family:'${data.fontFamily}'`);
-      if(data.fontSize&&data.fontSize!==11)style.push(`font-size:${data.fontSize}px`);
-      if(data.textColor&&data.textColor!=='#000000')style.push(`color:${data.textColor}`);
-      const sAttr=style.length?` style="${style.join(';')}"` :'';
-      // Read receipt
-      let readMark='';
-      if(mine){
-        const read=(data.readBy||[]).includes(otherUid);
-        readMark=`<span class="msg-read${read?'':' unsent'}">${read?'✓✓':'✓'}</span>`;
-      }
-      const line=document.createElement('div');line.className='msg-line';
-      line.innerHTML=`<span${sAttr}>${content}</span>${readMark}`;
-      block.appendChild(line);
-    });
+    // Message content
+    let content='';
+    if(data.type==='image'){
+      content=`<img class="msg-img" src="${data.imageBase64}" alt="imagem" onclick="openLightbox('${data.imageBase64}')">`;
+    } else if(data.type==='file'){
+      content=`<span class="msg-file" onclick="downloadFile('${data.fileName}','${data.fileBase64}')">📎 ${escHtml(data.fileName)}</span>`;
+    } else {
+      let txt=escHtml(data.text||'');
+      if(data.bold)txt=`<b>${txt}</b>`;
+      if(data.italic)txt=`<i>${txt}</i>`;
+      if(data.underline)txt=`<u>${txt}</u>`;
+      content=txt.replace(/\n/g,'<br>');
+    }
+    const st=[];
+    if(data.fontFamily&&data.fontFamily!=='Tahoma')st.push(`font-family:'${data.fontFamily}'`);
+    if(data.fontSize&&data.fontSize!==11)st.push(`font-size:${data.fontSize}px`);
+    if(data.textColor&&data.textColor!=='#000000')st.push(`color:${data.textColor}`);
+    const sAttr=st.length?` style="${st.join(';')}"` :'';
+    let readMark='';
+    if(mine){
+      const read=(data.readBy||[]).includes(otherUid);
+      readMark=`<span class="msg-read${read?'':' unsent'}">${read?'✓✓':'✓'}</span>`;
+    }
+    const line=document.createElement('div');line.className='msg-line';
+    line.innerHTML=`<span${sAttr}>${content}</span>${readMark}`;
+    block.appendChild(line);
 
     if(mine){row.appendChild(block);row.appendChild(av);}
     else{row.appendChild(av);row.appendChild(block);}
