@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Messenger Online</title>
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <meta name="mobile-web-app-capable" content="yes">
@@ -13,391 +13,233 @@
 <link rel="manifest" href="../manifest.json">
 <link rel="apple-touch-icon" href="../favicon.svg">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Tahoma&display=swap');
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+@import url('https://fonts.googleapis.com/css2?family=Tahoma&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Tahoma',Arial,sans-serif;font-size:11px;background:#1a3a6e;background-image:radial-gradient(ellipse at 20% 50%,#2a5298 0%,transparent 55%),radial-gradient(ellipse at 80% 20%,#0d47a1 0%,transparent 55%);display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:20px}
+@keyframes appear{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.msn-window{width:290px;min-height:600px;background:#fff;border:1px solid #888;box-shadow:3px 3px 10px rgba(0,0,0,.5);display:flex;flex-direction:column;animation:appear .2s ease}
+.title-bar{height:22px;background:linear-gradient(to bottom,#4a90d9 0%,#2563c0 50%,#1a4fa0 100%);display:flex;align-items:center;padding:0 5px;gap:4px;user-select:none;flex-shrink:0}
+.tb-text{color:#fff;font-size:11px;font-weight:bold;flex:1;text-shadow:1px 1px rgba(0,0,0,.4)}
+.tb-btn{width:16px;height:14px;background:linear-gradient(to bottom,#e8e8e8,#b8b8b8);border:1px solid #888;border-radius:2px;cursor:pointer;font-size:9px;font-weight:bold;display:flex;align-items:center;justify-content:center;color:#333}
+.tb-btn:hover{background:linear-gradient(to bottom,#fff,#ccc)}
+.tb-btn.close:hover{background:linear-gradient(to bottom,#ff6666,#cc0000);color:#fff}
+.menu-bar{height:18px;background:#ece9d8;border-bottom:1px solid #aca899;display:flex;align-items:center;padding:0 4px;gap:2px;flex-shrink:0}
+.menu-item{font-size:11px;color:#000;cursor:pointer;padding:1px 6px;border-radius:2px;white-space:nowrap}
+.menu-item:hover{background:#316ac5;color:#fff}
+.msn-header{background:linear-gradient(to bottom,#e8f0ff,#ccdaff);padding:8px;border-bottom:1px solid #99aacc;flex-shrink:0}
+.my-profile{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.avatar-wrap{position:relative;width:52px;height:52px;flex-shrink:0;cursor:pointer}
+.avatar{width:52px;height:52px;border:2px solid #6688cc;background:linear-gradient(135deg,#4a90e2,#7b68ee);display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.avatar-edit-overlay{position:absolute;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;color:#fff;font-size:18px}
+.avatar-wrap:hover .avatar-edit-overlay{display:flex}
+.status-dot{position:absolute;bottom:1px;right:1px;width:11px;height:11px;border-radius:50%;border:2px solid #ccdaff}
+.my-info{flex:1;min-width:0}
+.my-name{font-size:12px;font-weight:bold;color:#003399;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.my-name:hover{text-decoration:underline}
+.my-msg{font-size:10px;color:#555;font-style:italic;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.my-song{font-size:9px;color:#7755aa;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
+.status-sel{font-size:10px;border:1px solid #99aacc;background:#fff;padding:1px 2px;color:#333;font-family:inherit;cursor:pointer;margin-top:3px;width:100%}
+.mobile-actions{display:none;gap:6px;align-items:center}
+.mob-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;color:#fff;-webkit-tap-highlight-color:transparent}
+.mob-btn:active{background:rgba(255,255,255,.3)}
+.nav-tabs{display:flex;background:#ece9d8;border-bottom:1px solid #aca899;flex-shrink:0}
+.nav-tab{flex:1;padding:4px 0;text-align:center;font-size:10px;cursor:pointer;color:#555;border-bottom:2px solid transparent;position:relative}
+.nav-tab:hover{background:#ddd}
+.nav-tab.active{background:#fff;color:#003399;font-weight:bold;border-bottom:2px solid #4a90d9}
+.badge{position:absolute;top:1px;right:6px;background:#cc0000;color:#fff;font-size:8px;font-weight:bold;border-radius:8px;padding:0 3px;min-width:12px;text-align:center}
+.search-bar{background:#ece9d8;border-bottom:1px solid #aca899;padding:3px 6px;display:flex;align-items:center;gap:4px;flex-shrink:0}
+.search-input{flex:1;border:1px solid #aaa;padding:1px 4px;font-size:10px;font-family:inherit;background:#fff;outline:none}
+.search-input:focus{border-color:#4a90d9}
+.panel{display:none;flex:1;flex-direction:column;overflow:hidden}
+.panel.active{display:flex}
+.list-area{flex:1;overflow-y:auto;background:#fff}
+.list-area::-webkit-scrollbar{width:12px}
+.list-area::-webkit-scrollbar-track{background:#f0f0f0}
+.list-area::-webkit-scrollbar-thumb{background:linear-gradient(to bottom,#c8c8c8,#a0a0a0);border:1px solid #888}
+.group-header{background:linear-gradient(to bottom,#e8e4d8,#d8d4c8);border-top:1px solid #c8c4b8;border-bottom:1px solid #b8b4a8;padding:2px 6px;cursor:pointer;display:flex;align-items:center;gap:4px;user-select:none}
+.group-arrow{font-size:8px;color:#666;transition:transform .15s}
+.group-arrow.col{transform:rotate(-90deg)}
+.group-name{font-size:11px;color:#333;font-weight:bold}
+.group-count{font-size:10px;color:#888;margin-left:auto}
+.group-list.hidden{display:none}
+.contact-item{display:flex;align-items:center;gap:6px;padding:3px 8px 3px 16px;cursor:pointer;border-bottom:1px solid #f4f4f4;transition:background .1s;position:relative}
+.contact-item:hover{background:#dce8ff}
+.contact-item:hover .c-actions{display:flex}
+.c-actions{display:none;position:absolute;right:4px;top:50%;transform:translateY(-50%);gap:3px;z-index:1}
+.c-act-btn{width:18px;height:18px;background:linear-gradient(to bottom,#e8e4d8,#c8c4b4);border:1px solid #999;border-radius:2px;cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center}
+.c-act-btn:hover{background:#316ac5;color:#fff;border-color:#1a4fa0}
+.contact-avatar{width:32px;height:32px;border:1px solid #aabbdd;background:linear-gradient(135deg,#88aaee,#aabbff);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;position:relative;overflow:hidden}
+.contact-avatar img{width:100%;height:100%;object-fit:cover}
+.c-dot{position:absolute;bottom:0;right:0;width:8px;height:8px;border-radius:50%;border:1px solid #fff}
+.contact-info{flex:1;min-width:0}
+.c-name{font-size:11px;font-weight:bold;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-msg{font-size:10px;color:#888;font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-song{font-size:9px;color:#7755aa;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.s-online{background:#00c800}.s-away{background:#ffaa00}.s-busy{background:#cc0000}.s-offline{background:#aaa}
+.blocked-item{opacity:.45}
+.blocked-item .c-name::after{content:' (bloqueado)';font-size:9px;color:#cc0000;font-weight:normal}
+.unread-item{background:#f0f4ff}
+.unread-item:hover{background:#dce8ff}
+.c-name-row{display:flex;align-items:center;justify-content:space-between}
+.c-name-bold{font-weight:bold}
+.lm-row{display:flex;align-items:center;gap:2px;font-size:10px;color:#888;overflow:hidden;margin-top:1px}
+.lm-me{color:#888;flex-shrink:0}
+.lm-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.lm-time{flex-shrink:0;font-size:9px;color:#bbb;margin-left:4px}
+.lm-read{flex-shrink:0;color:#4a90d9;font-size:9px;margin-right:2px}
+.lm-unread-dot{width:7px;height:7px;border-radius:50%;background:#4a90d9;flex-shrink:0;margin-right:2px}
+.add-bar{background:#ece9d8;border-top:1px solid #aca899;padding:4px 6px;display:flex;gap:4px;flex-shrink:0}
+.add-input{flex:1;border:1px solid #aaa;padding:2px 4px;font-size:10px;font-family:inherit;background:#fff;outline:none}
+.add-input:focus{border-color:#4a90d9}
+.add-btn{font-size:10px;font-family:inherit;background:linear-gradient(to bottom,#4a90d9,#1a4fa0);color:#fff;border:1px solid #1a4fa0;padding:0 8px;cursor:pointer;border-radius:2px}
+.request-item{display:flex;align-items:center;gap:8px;padding:6px 10px;border-bottom:1px solid #f0f0f0}
+.req-avatar{width:32px;height:32px;border:1px solid #aabbdd;background:linear-gradient(135deg,#88aaee,#aabbff);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;overflow:hidden}
+.req-avatar img{width:100%;height:100%;object-fit:cover}
+.req-info{flex:1;min-width:0}
+.req-name{font-size:11px;font-weight:bold;color:#003399}
+.req-sub{font-size:10px;color:#888}
+.req-btns{display:flex;gap:4px}
+.req-btn{font-size:10px;font-family:inherit;border:1px solid #999;padding:2px 6px;cursor:pointer;border-radius:2px}
+.req-btn.accept{background:linear-gradient(to bottom,#4a90d9,#1a4fa0);color:#fff;border-color:#1a4fa0}
+.req-btn.decline{background:linear-gradient(to bottom,#e8e4d8,#c8c4b4);color:#333}
+.empty-msg{padding:20px;text-align:center;color:#999;font-size:11px;line-height:1.8}
+.msn-footer{height:22px;background:linear-gradient(to bottom,#ece9d8,#d4d0c8);border-top:1px solid #aca899;display:flex;align-items:center;padding:0 6px;gap:6px;flex-shrink:0}
+.f-btn{font-size:10px;color:#333;cursor:pointer;padding:1px 4px;border-radius:2px;border:1px solid transparent}
+.f-btn:hover{border-color:#aaa;background:#fff}
+.notif-popup{position:fixed;bottom:20px;right:20px;z-index:500;background:linear-gradient(to bottom,#e8f0ff,#ccdaff);border:1px solid #6688cc;padding:10px 14px 10px 10px;box-shadow:2px 2px 8px rgba(0,0,0,.3);font-size:11px;display:none;max-width:240px;cursor:pointer}
+.notif-popup.show{display:flex;gap:8px;align-items:flex-start;animation:slideUp .2s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.notif-avatar{width:32px;height:32px;border:1px solid #aabbdd;background:linear-gradient(135deg,#88aaee,#aabbff);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;overflow:hidden}
+.notif-avatar img{width:100%;height:100%;object-fit:cover}
+.notif-body{flex:1;min-width:0}
+.notif-name{font-weight:bold;color:#003399;font-size:11px}
+.notif-msg{color:#333;font-size:10px;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.notif-close{font-size:11px;color:#888;cursor:pointer;padding:0 2px;flex-shrink:0}
+.notif-close:hover{color:#cc0000}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:400;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:#ece9d8;border:1px solid #888;box-shadow:3px 3px 10px rgba(0,0,0,.4);width:300px;animation:appear .15s ease;max-height:90vh;overflow-y:auto}
+.modal-title{height:22px;background:linear-gradient(to bottom,#4a90d9,#1a4fa0);display:flex;align-items:center;padding:0 6px;gap:4px;position:sticky;top:0;z-index:1}
+.modal-title span{color:#fff;font-size:11px;font-weight:bold;flex:1}
+.modal-body{padding:14px;display:flex;flex-direction:column;gap:10px}
+.m-label{font-size:11px;color:#333;margin-bottom:2px}
+.m-input{width:100%;border:1px solid #aaa;padding:3px 5px;font-size:11px;font-family:inherit;background:#fff;outline:none}
+.m-input:focus{border-color:#4a90d9}
+.modal-btns{display:flex;justify-content:flex-end;gap:6px;flex-wrap:wrap}
+.m-btn{font-size:11px;font-family:inherit;background:linear-gradient(to bottom,#e8e4d8,#c8c4b4);border:1px solid #999;padding:2px 14px;cursor:pointer;border-radius:2px}
+.m-btn:hover{background:linear-gradient(to bottom,#fff,#ddd)}
+.m-btn.primary{background:linear-gradient(to bottom,#4a90d9,#1a4fa0);color:#fff;border-color:#1a4fa0}
+.m-btn.primary:hover{background:linear-gradient(to bottom,#5aa0e9,#2a5fb0)}
+.m-btn.danger{background:linear-gradient(to bottom,#e86666,#cc0000);color:#fff;border-color:#cc0000}
+.emoji-picker{display:flex;flex-wrap:wrap;gap:5px}
+.emoji-opt{font-size:20px;cursor:pointer;padding:2px 4px;border:2px solid transparent;border-radius:3px}
+.emoji-opt:hover{background:#ddd}
+.emoji-opt.selected{border-color:#4a90d9;background:#e8f0ff}
+.photo-area{display:flex;align-items:center;gap:10px}
+.photo-preview{width:52px;height:52px;border:2px solid #6688cc;background:linear-gradient(135deg,#4a90e2,#7b68ee);display:flex;align-items:center;justify-content:center;font-size:26px;overflow:hidden;flex-shrink:0}
+.photo-preview img{width:100%;height:100%;object-fit:cover}
+.photo-btns{display:flex;flex-direction:column;gap:4px}
+.photo-btn{font-size:10px;font-family:inherit;background:linear-gradient(to bottom,#e8e4d8,#c8c4b4);border:1px solid #999;padding:2px 8px;cursor:pointer;border-radius:2px}
+#photoFileInput{display:none}
+.color-row{display:flex;flex-wrap:wrap;gap:5px}
+.color-opt{width:20px;height:20px;border-radius:50%;border:3px solid transparent;cursor:pointer}
+.color-opt:hover{border-color:#888}
+.color-opt.selected{border-color:#000;box-shadow:0 0 0 1px #fff inset}
+.profile-view{text-align:center;padding:10px 0}
+.pv-avatar{width:72px;height:72px;border:3px solid #6688cc;background:linear-gradient(135deg,#4a90e2,#7b68ee);display:flex;align-items:center;justify-content:center;font-size:38px;margin:0 auto 8px;overflow:hidden}
+.pv-avatar img{width:100%;height:100%;object-fit:cover}
+.pv-name{font-size:14px;font-weight:bold;color:#003399}
+.pv-username{font-size:10px;color:#888;margin-top:2px}
+.pv-msg{font-size:11px;color:#555;font-style:italic;margin-top:6px}
+.pv-song{font-size:10px;color:#7755aa;margin-top:4px}
+.pv-status{margin-top:6px;font-size:10px;display:flex;align-items:center;justify-content:center;gap:4px}
+.notif-settings{display:flex;flex-direction:column;gap:4px}
+.notif-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid #ddd}
+.notif-row:last-child{border-bottom:none}
+.notif-row-label{font-size:11px;color:#333}
+.notif-row-desc{font-size:10px;color:#888;margin-top:1px}
+.toggle-btn{width:36px;height:18px;border-radius:9px;border:1px solid #aaa;background:#ccc;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.toggle-btn.on{background:#4a90d9;border-color:#2a5fb0}
+.toggle-btn::after{content:'';position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.toggle-btn.on::after{left:20px}
+.history-list{display:flex;flex-direction:column;max-height:300px;overflow-y:auto}
+.history-item{padding:3px 6px;font-size:11px;display:flex;gap:6px;border-bottom:1px solid #f0f0f0;align-items:baseline}
+.h-name{font-weight:bold;min-width:60px;flex-shrink:0;font-size:10px}
+.h-text{color:#444;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}
+.h-time{color:#aaa;font-size:9px;flex-shrink:0}
+.h-mine .h-name{color:#cc0000}
+.h-theirs .h-name{color:#0033cc}
+.h-system{color:#aaa;font-style:italic;justify-content:center;font-size:10px}
+.loading-screen{position:fixed;inset:0;background:rgba(26,58,110,.9);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:12px}
+.loading-screen.hidden{display:none}
+.loading-text{color:#fff;font-size:13px}
+.loading-bar{width:160px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;overflow:hidden}
+.loading-fill{height:100%;background:#4a90d9;border-radius:2px;animation:fill 1.5s ease forwards}
+@keyframes fill{from{width:0%}to{width:100%}}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:6px 16px;font-size:11px;border-radius:2px;z-index:600;display:none;white-space:nowrap}
+.toast.show{display:block;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.install-banner{display:none;position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:290px;background:linear-gradient(to bottom,#e8f0ff,#ccdaff);border:1px solid #6688cc;border-bottom:none;padding:8px 12px;box-shadow:0 -2px 8px rgba(0,0,0,.2);z-index:300;align-items:center;gap:10px}
+.install-banner.show{display:flex;animation:slideUp .3s ease}
+.install-banner-text{flex:1;font-size:11px;color:#003399;line-height:1.4}
+.install-banner-text b{display:block;font-size:12px}
+.install-btn{font-family:inherit;font-size:10px;background:linear-gradient(to bottom,#4a90d9,#1a4fa0);color:#fff;border:1px solid #1a4fa0;padding:4px 10px;cursor:pointer;border-radius:2px;white-space:nowrap}
+.install-dismiss{font-size:14px;color:#888;cursor:pointer;padding:0 4px}
 
-  /* ── BASE ── */
-  body {
-    font-family: 'Tahoma', Arial, sans-serif; font-size: 11px;
-    background: #1a3a6e;
-    background-image: radial-gradient(ellipse at 20% 50%, #2a5298 0%, transparent 55%),
-                      radial-gradient(ellipse at 80% 20%, #0d47a1 0%, transparent 55%);
-    display: flex; justify-content: center; align-items: flex-start;
-    min-height: 100vh; padding: 20px;
-  }
-
-  /* ── DESKTOP WINDOW ── */
-  .msn-window {
-    width: 290px; min-height: 600px; background: #fff;
-    border: 1px solid #888; box-shadow: 3px 3px 10px rgba(0,0,0,.5);
-    display: flex; flex-direction: column; animation: appear 0.2s ease;
-  }
-  @keyframes appear { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-
-  .title-bar { height: 22px; background: linear-gradient(to bottom, #4a90d9 0%, #2563c0 50%, #1a4fa0 100%); display: flex; align-items: center; padding: 0 5px; gap: 4px; user-select: none; flex-shrink: 0; }
-  .tb-text { color: #fff; font-size: 11px; font-weight: bold; flex: 1; text-shadow: 1px 1px rgba(0,0,0,.4); }
-  .tb-btn { width: 16px; height: 14px; background: linear-gradient(to bottom, #e8e8e8, #b8b8b8); border: 1px solid #888; border-radius: 2px; cursor: pointer; font-size: 9px; font-weight: bold; display: flex; align-items: center; justify-content: center; color: #333; }
-  .tb-btn:hover { background: linear-gradient(to bottom, #fff, #ccc); }
-  .tb-btn.close:hover { background: linear-gradient(to bottom, #ff6666, #cc0000); color: #fff; }
-  .menu-bar { height: 18px; background: #ece9d8; border-bottom: 1px solid #aca899; display: flex; align-items: center; padding: 0 4px; gap: 2px; flex-shrink: 0; }
-  .menu-item { font-size: 11px; color: #000; cursor: pointer; padding: 1px 6px; border-radius: 2px; white-space: nowrap; }
-  .menu-item:hover { background: #316ac5; color: #fff; }
-
-  .msn-header { background: linear-gradient(to bottom, #e8f0ff, #ccdaff); padding: 8px; border-bottom: 1px solid #99aacc; flex-shrink: 0; }
-  .my-profile { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-  .avatar-wrap { position: relative; width: 52px; height: 52px; flex-shrink: 0; cursor: pointer; }
-  .avatar { width: 52px; height: 52px; border: 2px solid #6688cc; background: linear-gradient(135deg, #4a90e2, #7b68ee); display: flex; align-items: center; justify-content: center; font-size: 28px; overflow: hidden; }
-  .avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .avatar-edit-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.45); display: none; align-items: center; justify-content: center; color: #fff; font-size: 18px; }
-  .avatar-wrap:hover .avatar-edit-overlay { display: flex; }
-  .status-dot { position: absolute; bottom: 1px; right: 1px; width: 11px; height: 11px; border-radius: 50%; border: 2px solid #ccdaff; }
-  .my-info { flex: 1; min-width: 0; }
-  .my-name { font-size: 12px; font-weight: bold; color: #003399; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .my-name:hover { text-decoration: underline; }
-  .my-msg { font-size: 10px; color: #555; font-style: italic; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .my-msg:hover { color: #003399; }
-  .status-sel { font-size: 10px; border: 1px solid #99aacc; background: #fff; padding: 1px 2px; color: #333; font-family: inherit; cursor: pointer; margin-top: 3px; width: 100%; }
-
-  .nav-tabs { display: flex; background: #ece9d8; border-bottom: 1px solid #aca899; flex-shrink: 0; }
-  .nav-tab { flex: 1; padding: 4px 0; text-align: center; font-size: 10px; cursor: pointer; color: #555; border-bottom: 2px solid transparent; position: relative; }
-  .nav-tab:hover { background: #ddd; }
-  .nav-tab.active { background: #fff; color: #003399; font-weight: bold; border-bottom: 2px solid #4a90d9; }
-  .badge { position: absolute; top: 1px; right: 6px; background: #cc0000; color: #fff; font-size: 8px; font-weight: bold; border-radius: 8px; padding: 0 3px; min-width: 12px; text-align: center; }
-
-  .search-bar { background: #ece9d8; border-bottom: 1px solid #aca899; padding: 3px 6px; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
-  .search-input { flex: 1; border: 1px solid #aaa; padding: 1px 4px; font-size: 10px; font-family: inherit; background: #fff; outline: none; }
-  .search-input:focus { border-color: #4a90d9; }
-
-  .panel { display: none; flex: 1; flex-direction: column; overflow: hidden; }
-  .panel.active { display: flex; }
-  .list-area { flex: 1; overflow-y: auto; background: #fff; }
-  .list-area::-webkit-scrollbar { width: 12px; }
-  .list-area::-webkit-scrollbar-track { background: #f0f0f0; }
-  .list-area::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #c8c8c8, #a0a0a0); border: 1px solid #888; }
-
-  .group-header { background: linear-gradient(to bottom, #e8e4d8, #d8d4c8); border-top: 1px solid #c8c4b8; border-bottom: 1px solid #b8b4a8; padding: 2px 6px; cursor: pointer; display: flex; align-items: center; gap: 4px; user-select: none; }
-  .group-arrow { font-size: 8px; color: #666; transition: transform 0.15s; }
-  .group-arrow.col { transform: rotate(-90deg); }
-  .group-name { font-size: 11px; color: #333; font-weight: bold; }
-  .group-count { font-size: 10px; color: #888; margin-left: auto; }
-  .group-list.hidden { display: none; }
-
-  .contact-item { display: flex; align-items: center; gap: 6px; padding: 3px 8px 3px 16px; cursor: pointer; border-bottom: 1px solid #f4f4f4; transition: background 0.1s; }
-  .contact-item:hover { background: #dce8ff; }
-  .contact-avatar { width: 32px; height: 32px; border: 1px solid #aabbdd; background: linear-gradient(135deg, #88aaee, #aabbff); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; position: relative; overflow: hidden; }
-  .contact-avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .c-dot { position: absolute; bottom: 0; right: 0; width: 8px; height: 8px; border-radius: 50%; border: 1px solid #fff; }
-  .contact-info { flex: 1; min-width: 0; }
-  .c-name { font-size: 11px; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .c-msg  { font-size: 10px; color: #888; font-style: italic; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .s-online { background: #00c800; } .s-away { background: #ffaa00; } .s-busy { background: #cc0000; } .s-offline { background: #aaa; }
-
-  .add-bar { background: #ece9d8; border-top: 1px solid #aca899; padding: 4px 6px; display: flex; gap: 4px; flex-shrink: 0; }
-  .add-input { flex: 1; border: 1px solid #aaa; padding: 2px 4px; font-size: 10px; font-family: inherit; background: #fff; outline: none; }
-  .add-input:focus { border-color: #4a90d9; }
-  .add-btn { font-size: 10px; font-family: inherit; background: linear-gradient(to bottom, #4a90d9, #1a4fa0); color: #fff; border: 1px solid #1a4fa0; padding: 0 8px; cursor: pointer; border-radius: 2px; }
-  .add-btn:hover { background: linear-gradient(to bottom, #5aa0e9, #2a5fb0); }
-
-  .request-item { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-bottom: 1px solid #f0f0f0; }
-  .req-avatar { width: 32px; height: 32px; border: 1px solid #aabbdd; background: linear-gradient(135deg, #88aaee, #aabbff); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; overflow: hidden; }
-  .req-avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .req-info { flex: 1; min-width: 0; }
-  .req-name { font-size: 11px; font-weight: bold; color: #003399; }
-  .req-sub  { font-size: 10px; color: #888; }
-  .req-btns { display: flex; gap: 4px; }
-  .req-btn { font-size: 10px; font-family: inherit; border: 1px solid #999; padding: 2px 6px; cursor: pointer; border-radius: 2px; }
-  .req-btn.accept { background: linear-gradient(to bottom, #4a90d9, #1a4fa0); color: #fff; border-color: #1a4fa0; }
-  .req-btn.decline { background: linear-gradient(to bottom, #e8e4d8, #c8c4b4); color: #333; }
-
-  .empty-msg { padding: 20px; text-align: center; color: #999; font-size: 11px; line-height: 1.8; }
-
-  .msn-footer { height: 22px; background: linear-gradient(to bottom, #ece9d8, #d4d0c8); border-top: 1px solid #aca899; display: flex; align-items: center; padding: 0 6px; gap: 6px; flex-shrink: 0; }
-  .f-btn { font-size: 10px; color: #333; cursor: pointer; padding: 1px 4px; border-radius: 2px; border: 1px solid transparent; }
-  .f-btn:hover { border-color: #aaa; background: #fff; }
-
-  /* ═══════════════════════════════════
-     MOBILE LAYOUT — WhatsApp structure
-     MSN nostalgic colors & texture
-  ═══════════════════════════════════ */
-  @media (max-width: 768px) {
-    body {
-      padding: 0;
-      background: #1a3a6e;
-      align-items: stretch;
-      min-height: 100dvh;
-    }
-
-    .msn-window {
-      width: 100%; min-height: 100dvh; border: none; box-shadow: none;
-      border-radius: 0;
-    }
-
-    /* ── HEADER mobile: like WhatsApp topbar ── */
-    .title-bar { display: none; }
-    .menu-bar  { display: none; }
-
-    .msn-header {
-      background: linear-gradient(to bottom, #2563c0, #1a4fa0);
-      padding: 10px 12px 8px;
-      border-bottom: none;
-      padding-top: max(10px, env(safe-area-inset-top));
-    }
-    .my-profile { margin-bottom: 0; gap: 10px; }
-
-    .avatar-wrap { width: 42px; height: 42px; }
-    .avatar { width: 42px; height: 42px; font-size: 22px; border-color: rgba(255,255,255,0.4); }
-    .status-dot { border-color: #1a4fa0; }
-
-    .my-name  { font-size: 15px; color: #fff; font-weight: bold; }
-    .my-msg   { font-size: 11px; color: rgba(255,255,255,0.75); }
-    .my-msg:hover { color: #fff; }
-
-    .status-sel {
-      font-size: 11px; margin-top: 2px;
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.3);
-      color: #fff; border-radius: 12px; padding: 2px 8px;
-      width: auto;
-    }
-    .status-sel option { color: #000; background: #fff; }
-
-    /* Mobile action buttons replacing menu-bar */
-    .mobile-actions {
-      display: flex !important;
-      gap: 6px; margin-left: auto; align-items: center;
-    }
-    .mob-btn {
-      width: 34px; height: 34px; border-radius: 50%;
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.2);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; cursor: pointer; color: #fff;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .mob-btn:active { background: rgba(255,255,255,0.3); }
-
-  /* Hidden on desktop, shown via media query */
-  .mobile-actions { display: none; }
-
-    /* ── TABS mobile ── */
-    .nav-tabs {
-      background: #1a4fa0;
-      border-bottom: none;
-    }
-    .nav-tab {
-      color: rgba(255,255,255,0.65);
-      font-size: 12px;
-      padding: 10px 0;
-      border-bottom: 3px solid transparent;
-    }
-    .nav-tab.active {
-      background: transparent;
-      color: #fff;
-      border-bottom: 3px solid #fff;
-      font-weight: bold;
-    }
-    .nav-tab:hover { background: rgba(255,255,255,0.1); }
-    .badge { top: 4px; right: 10px; font-size: 9px; }
-
-    /* ── SEARCH mobile ── */
-    .search-bar {
-      background: #f0f4ff;
-      border-bottom: 1px solid #dde4f4;
-      padding: 6px 10px;
-    }
-    .search-input {
-      border-radius: 18px; border: 1px solid #c8d4ee;
-      padding: 5px 12px; font-size: 13px;
-      background: #fff;
-    }
-
-    /* ── CONTACT LIST mobile — WhatsApp style ── */
-    .list-area { background: #f5f7ff; }
-    .list-area::-webkit-scrollbar { display: none; }
-
-    .group-header {
-      background: #e8ecf8;
-      border-top: none;
-      border-bottom: 1px solid #dde4f4;
-      padding: 4px 14px;
-    }
-    .group-name { font-size: 12px; color: #1a4fa0; }
-    .group-count { color: #1a4fa0; opacity: 0.7; }
-    .group-arrow { color: #1a4fa0; }
-
-    .contact-item {
-      padding: 10px 14px;
-      gap: 12px;
-      border-bottom: 1px solid #eaeef8;
-      background: #fff;
-      align-items: center;
-      min-height: 64px;
-    }
-    .contact-item:active { background: #e8f0ff; }
-
-    .contact-avatar {
-      width: 46px; height: 46px; border-radius: 50%;
-      font-size: 22px; border: 2px solid #c8d4ee;
-      flex-shrink: 0;
-    }
-    .c-dot {
-      width: 12px; height: 12px;
-      border: 2px solid #fff;
-      bottom: 0; right: 0;
-    }
-    .contact-info { gap: 2px; }
-    .c-name { font-size: 14px; color: #111; }
-    .c-msg  { font-size: 12px; }
-    .c-name-bold { font-size: 14px; font-weight: 700; color: #000; }
-
-    /* Last message row mobile */
-    .lm-row { font-size: 12px; margin-top: 2px; }
-    .lm-text { color: #666; }
-    .lm-time { font-size: 11px; color: #aaa; }
-    .lm-read { font-size: 11px; }
-    .lm-unread-dot { width: 9px; height: 9px; }
-
-    /* ── REQUESTS mobile ── */
-    .request-item {
-      padding: 12px 14px; gap: 12px;
-      background: #fff; border-bottom: 1px solid #eaeef8;
-    }
-    .req-avatar { width: 46px; height: 46px; border-radius: 50%; font-size: 22px; }
-    .req-name { font-size: 14px; }
-    .req-sub  { font-size: 12px; margin-top: 2px; }
-    .req-btn  { padding: 5px 12px; font-size: 12px; border-radius: 14px; }
-
-    /* ── ADD CONTACT mobile ── */
-    .add-bar {
-      background: #fff;
-      border-top: 1px solid #dde4f4;
-      padding: 8px 12px;
-      padding-bottom: max(8px, env(safe-area-inset-bottom));
-    }
-    .add-input {
-      border-radius: 20px; padding: 8px 14px;
-      font-size: 13px; border-color: #c8d4ee;
-    }
-    .add-btn {
-      border-radius: 20px; padding: 0 16px;
-      font-size: 12px; height: 34px;
-    }
-
-    /* ── FOOTER mobile → hidden (replaced by header actions) ── */
-    .msn-footer { display: none; }
-
-    /* ── MODALS mobile ── */
-    .modal { width: 92vw; max-width: 380px; }
-    .m-input { font-size: 14px; padding: 8px 10px; }
-    .m-btn   { font-size: 13px; padding: 6px 18px; }
-    .emoji-opt { font-size: 24px; }
-    .photo-preview { width: 64px; height: 64px; font-size: 32px; }
-
-    /* ── INSTALL BANNER mobile ── */
-    .install-banner {
-      width: 100% !important;
-      border-left: none; border-right: none; border-top: 1px solid #6688cc;
-      padding: 10px 14px;
-      padding-bottom: max(10px, env(safe-area-inset-bottom));
-    }
-    .install-banner-text b { font-size: 13px; }
-    .install-banner-text { font-size: 12px; }
-    .install-btn { padding: 6px 14px; font-size: 12px; border-radius: 14px; }
-  }
-
-  /* NOTIF POPUP */
-  .notif-popup { position: fixed; bottom: 20px; right: 20px; z-index: 500; background: linear-gradient(to bottom, #e8f0ff, #ccdaff); border: 1px solid #6688cc; padding: 10px 14px 10px 10px; box-shadow: 2px 2px 8px rgba(0,0,0,.3); font-size: 11px; display: none; max-width: 240px; cursor: pointer; }
-  .notif-popup.show { display: flex; gap: 8px; align-items: flex-start; animation: slideUp 0.2s ease; }
-  @keyframes slideUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-  .notif-avatar { width: 32px; height: 32px; border: 1px solid #aabbdd; background: linear-gradient(135deg, #88aaee, #aabbff); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; overflow: hidden; }
-  .notif-avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .notif-body { flex: 1; min-width: 0; }
-  .notif-name { font-weight: bold; color: #003399; font-size: 11px; }
-  .notif-msg  { color: #333; font-size: 10px; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .notif-close { font-size: 11px; color: #888; cursor: pointer; padding: 0 2px; flex-shrink: 0; }
-  .notif-close:hover { color: #cc0000; }
-
-  /* MODALS */
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 400; align-items: center; justify-content: center; }
-  .modal-overlay.show { display: flex; }
-  .modal { background: #ece9d8; border: 1px solid #888; box-shadow: 3px 3px 10px rgba(0,0,0,.4); width: 300px; animation: appear 0.15s ease; }
-  .modal-title { height: 22px; background: linear-gradient(to bottom, #4a90d9, #1a4fa0); display: flex; align-items: center; padding: 0 6px; gap: 4px; }
-  .modal-title span { color: #fff; font-size: 11px; font-weight: bold; flex: 1; }
-  .modal-body { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
-  .m-label { font-size: 11px; color: #333; margin-bottom: 2px; }
-  .m-input { width: 100%; border: 1px solid #aaa; padding: 3px 5px; font-size: 11px; font-family: inherit; background: #fff; outline: none; }
-  .m-input:focus { border-color: #4a90d9; }
-  .modal-btns { display: flex; justify-content: flex-end; gap: 6px; }
-  .m-btn { font-size: 11px; font-family: inherit; background: linear-gradient(to bottom, #e8e4d8, #c8c4b4); border: 1px solid #999; padding: 2px 14px; cursor: pointer; border-radius: 2px; }
-  .m-btn:hover { background: linear-gradient(to bottom, #fff, #ddd); }
-  .m-btn.primary { background: linear-gradient(to bottom, #4a90d9, #1a4fa0); color: #fff; border-color: #1a4fa0; }
-  .m-btn.primary:hover { background: linear-gradient(to bottom, #5aa0e9, #2a5fb0); }
-
-  .emoji-picker { display: flex; flex-wrap: wrap; gap: 5px; }
-  .emoji-opt { font-size: 20px; cursor: pointer; padding: 2px 4px; border: 2px solid transparent; border-radius: 3px; }
-  .emoji-opt:hover { background: #ddd; }
-  .emoji-opt.selected { border-color: #4a90d9; background: #e8f0ff; }
-
-  .photo-area { display: flex; align-items: center; gap: 10px; }
-  .photo-preview { width: 52px; height: 52px; border: 2px solid #6688cc; background: linear-gradient(135deg, #4a90e2, #7b68ee); display: flex; align-items: center; justify-content: center; font-size: 26px; overflow: hidden; flex-shrink: 0; }
-  .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
-  .photo-btns { display: flex; flex-direction: column; gap: 4px; }
-  .photo-btn { font-size: 10px; font-family: inherit; background: linear-gradient(to bottom, #e8e4d8, #c8c4b4); border: 1px solid #999; padding: 2px 8px; cursor: pointer; border-radius: 2px; }
-  .photo-btn:hover { background: linear-gradient(to bottom, #fff, #ddd); }
-  #photoFileInput { display: none; }
-
-  .profile-view { text-align: center; padding: 10px 0; }
-  .pv-avatar { width: 72px; height: 72px; border: 3px solid #6688cc; background: linear-gradient(135deg, #4a90e2, #7b68ee); display: flex; align-items: center; justify-content: center; font-size: 38px; margin: 0 auto 8px; overflow: hidden; }
-  .pv-avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .pv-name { font-size: 14px; font-weight: bold; color: #003399; }
-  .pv-username { font-size: 10px; color: #888; margin-top: 2px; }
-  .pv-msg { font-size: 11px; color: #555; font-style: italic; margin-top: 6px; }
-  .pv-status { margin-top: 6px; font-size: 10px; display: flex; align-items: center; justify-content: center; gap: 4px; }
-
-  /* NOTIF SETTINGS MODAL */
-  .notif-settings { display: flex; flex-direction: column; gap: 8px; }
-  .notif-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #ddd; }
-  .notif-row:last-child { border-bottom: none; }
-  .notif-row-label { font-size: 11px; color: #333; }
-  .notif-row-desc { font-size: 10px; color: #888; margin-top: 1px; }
-  .toggle-btn { width: 36px; height: 18px; border-radius: 9px; border: 1px solid #aaa; background: #ccc; cursor: pointer; position: relative; transition: background 0.2s; flex-shrink: 0; }
-  .toggle-btn.on { background: #4a90d9; border-color: #2a5fb0; }
-  .toggle-btn::after { content: ''; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: #fff; transition: left 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,.3); }
-  .toggle-btn.on::after { left: 20px; }
-
-  /* LOADING */
-  .loading-screen { position: fixed; inset: 0; background: rgba(26,58,110,0.9); display: flex; align-items: center; justify-content: center; z-index: 999; flex-direction: column; gap: 12px; }
-  .loading-screen.hidden { display: none; }
-  .loading-text { color: #fff; font-size: 13px; }
-  .loading-bar { width: 160px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; overflow: hidden; }
-  .loading-fill { height: 100%; background: #4a90d9; border-radius: 2px; animation: fill 1.5s ease forwards; }
-  @keyframes fill { from { width:0%; } to { width:100%; } }
-
-  .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 6px 16px; font-size: 11px; border-radius: 2px; z-index: 600; display: none; white-space: nowrap; }
-  .toast.show { display: block; animation: fadeIn 0.2s ease; }
-  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-
-  /* INSTALL BANNER */
-  .install-banner { display: none; position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 290px; background: linear-gradient(to bottom, #e8f0ff, #ccdaff); border: 1px solid #6688cc; border-bottom: none; padding: 8px 12px; box-shadow: 0 -2px 8px rgba(0,0,0,.2); z-index: 300; align-items: center; gap: 10px; }
-  .install-banner.show { display: flex; animation: slideUp 0.3s ease; }
-  .install-banner-text { flex: 1; font-size: 11px; color: #003399; line-height: 1.4; }
-  .install-banner-text b { display: block; font-size: 12px; }
-  .install-btn { font-family: inherit; font-size: 10px; background: linear-gradient(to bottom, #4a90d9, #1a4fa0); color: #fff; border: 1px solid #1a4fa0; padding: 4px 10px; cursor: pointer; border-radius: 2px; white-space: nowrap; }
-  .install-btn:hover { background: linear-gradient(to bottom, #5aa0e9, #2a5fb0); }
-  .install-dismiss { font-size: 14px; color: #888; cursor: pointer; padding: 0 4px; }
-  .install-dismiss:hover { color: #cc0000; }
-
-  /* LAST MESSAGE */
-  .unread-item { background: #f0f4ff; }
-  .unread-item:hover { background: #dce8ff; }
-  .c-name-row { display: flex; align-items: center; justify-content: space-between; }
-  .c-name-bold { font-weight: bold; color: #003399; }
-  .lm-row { display: flex; align-items: center; gap: 2px; font-size: 10px; color: #888; overflow: hidden; margin-top: 1px; }
-  .lm-me { color: #888; flex-shrink: 0; }
-  .lm-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
-  .lm-time { flex-shrink: 0; font-size: 9px; color: #bbb; margin-left: 4px; }
-  .lm-read { flex-shrink: 0; color: #4a90d9; font-size: 9px; margin-right: 2px; }
-  .lm-unread-dot { width: 7px; height: 7px; border-radius: 50%; background: #4a90d9; flex-shrink: 0; margin-right: 2px; }
+/* ══ MOBILE ══ */
+@media(max-width:768px){
+  body{padding:0!important;align-items:stretch!important;min-height:100dvh!important}
+  .msn-window{width:100%!important;min-height:100dvh!important;max-width:100%!important;border:none!important;box-shadow:none!important}
+  .title-bar,.menu-bar{display:none}
+  .msn-header{background:linear-gradient(to bottom,#2563c0,#1a4fa0);padding:10px 12px 8px;border-bottom:none;padding-top:max(10px,env(safe-area-inset-top))}
+  .my-profile{margin-bottom:0;gap:10px}
+  .avatar-wrap{width:42px;height:42px}
+  .avatar{width:42px;height:42px;font-size:22px;border-color:rgba(255,255,255,.4)}
+  .status-dot{border-color:#1a4fa0}
+  .my-name{font-size:15px;color:#fff!important;font-weight:bold}
+  .my-msg{font-size:11px;color:rgba(255,255,255,.75)}
+  .my-song{color:rgba(200,180,255,.9)}
+  .status-sel{font-size:11px;margin-top:2px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:12px;padding:2px 8px;width:auto}
+  .status-sel option{color:#000;background:#fff}
+  .mobile-actions{display:flex!important}
+  .nav-tabs{background:#1a4fa0;border-bottom:none}
+  .nav-tab{color:rgba(255,255,255,.65);font-size:12px;padding:10px 0;border-bottom:3px solid transparent}
+  .nav-tab.active{background:transparent;color:#fff;border-bottom:3px solid #fff;font-weight:bold}
+  .nav-tab:hover{background:rgba(255,255,255,.1)}
+  .badge{top:4px;right:10px}
+  .search-bar{background:#f0f4ff;border-bottom:1px solid #dde4f4;padding:6px 10px}
+  .search-input{border-radius:18px;border:1px solid #c8d4ee;padding:5px 12px;font-size:13px;background:#fff}
+  .list-area{background:#f5f7ff}
+  .list-area::-webkit-scrollbar{display:none}
+  .group-header{background:#e8ecf8;border-top:none;border-bottom:1px solid #dde4f4;padding:4px 14px}
+  .group-name{font-size:12px;color:#1a4fa0}
+  .group-count,.group-arrow{color:#1a4fa0}
+  .contact-item{padding:10px 14px;gap:12px;border-bottom:1px solid #eaeef8;background:#fff;min-height:64px}
+  .contact-item:active{background:#e8f0ff}
+  .contact-item:hover .c-actions{display:none}
+  .contact-avatar{width:46px;height:46px;border-radius:50%;font-size:22px;border:2px solid #c8d4ee;flex-shrink:0}
+  .c-dot{width:12px;height:12px;border:2px solid #fff}
+  .c-name{font-size:14px;color:#111}
+  .c-msg{font-size:12px}
+  .lm-row{font-size:12px;margin-top:2px}
+  .lm-time{font-size:11px}
+  .lm-unread-dot{width:9px;height:9px}
+  .request-item{padding:12px 14px;gap:12px;background:#fff;border-bottom:1px solid #eaeef8}
+  .req-avatar{width:46px;height:46px;border-radius:50%;font-size:22px}
+  .req-name{font-size:14px}
+  .req-sub{font-size:12px;margin-top:2px}
+  .req-btn{padding:5px 12px;font-size:12px;border-radius:14px}
+  .add-bar{background:#fff;border-top:1px solid #dde4f4;padding:8px 12px;padding-bottom:max(8px,env(safe-area-inset-bottom))}
+  .add-input{border-radius:20px;padding:8px 14px;font-size:13px;border-color:#c8d4ee}
+  .add-btn{border-radius:20px;padding:0 16px;font-size:12px;height:34px}
+  .msn-footer{display:none}
+  .modal{width:92vw;max-width:380px}
+  .m-input{font-size:14px;padding:8px 10px}
+  .m-btn{font-size:13px;padding:6px 16px}
+  .emoji-opt{font-size:24px}
+  .install-banner{width:100%!important;border-left:none;border-right:none;border-top:1px solid #6688cc;padding:10px 14px;padding-bottom:max(10px,env(safe-area-inset-bottom))}
+}
 </style>
 </head>
 <body>
@@ -409,8 +251,7 @@
 
 <div class="msn-window">
   <div class="title-bar">
-    <span>🦋</span>
-    <span class="tb-text">Messenger Online</span>
+    <span>🦋</span><span class="tb-text">Messenger Online</span>
     <div class="tb-btn">_</div><div class="tb-btn">□</div>
     <div class="tb-btn close" onclick="doSignOut()">✕</div>
   </div>
@@ -419,7 +260,6 @@
     <span class="menu-item" onclick="openNotifSettings()">🔔 Notificações</span>
     <span class="menu-item" onclick="doSignOut()">🚪 Sair</span>
   </div>
-
   <div class="msn-header">
     <div class="my-profile">
       <div class="avatar-wrap" onclick="openEdit()">
@@ -430,6 +270,7 @@
       <div class="my-info">
         <div class="my-name" id="myName" onclick="openEdit()">Carregando...</div>
         <div class="my-msg"  id="myMsg"  onclick="openEdit()">...</div>
+        <div class="my-song" id="mySong" style="display:none"></div>
         <select class="status-sel" id="statusSel" onchange="changeStatus()">
           <option value="online">🟢 Online</option>
           <option value="away">🟡 Ausente</option>
@@ -438,18 +279,16 @@
         </select>
       </div>
       <div class="mobile-actions">
-        <div class="mob-btn" onclick="openNotifSettings()" title="Notificações">🔔</div>
-        <div class="mob-btn" onclick="toggleMute()" id="mobMuteBtn" title="Silenciar">🔔</div>
-        <div class="mob-btn" onclick="openEdit()" title="Perfil">✏️</div>
+        <div class="mob-btn" onclick="openNotifSettings()">🔔</div>
+        <div class="mob-btn" id="mobMuteBtn" onclick="toggleMute()">🔔</div>
+        <div class="mob-btn" onclick="openEdit()">✏️</div>
       </div>
     </div>
   </div>
-
   <div class="nav-tabs">
     <div class="nav-tab active" id="tab-contacts" onclick="switchPanel('contacts')">👥 Contatos</div>
     <div class="nav-tab" id="tab-requests" onclick="switchPanel('requests')">📨 Pedidos <span class="badge" id="reqBadge" style="display:none">0</span></div>
   </div>
-
   <div class="panel active" id="panel-contacts">
     <div class="search-bar">
       <span>🔍</span>
@@ -457,67 +296,58 @@
     </div>
     <div class="list-area" id="contactsArea"><div class="empty-msg">Carregando...</div></div>
     <div class="add-bar">
-      <input class="add-input" type="text" id="addInput" placeholder="Enviar pedido: nome de usuário">
+      <input class="add-input" type="text" id="addInput" placeholder="Adicionar: nome de usuário">
       <button class="add-btn" onclick="sendRequest()">+ Adicionar</button>
     </div>
   </div>
-
   <div class="panel" id="panel-requests">
     <div class="list-area" id="requestsArea"><div class="empty-msg">Nenhum pedido pendente.</div></div>
   </div>
-
   <div class="msn-footer">
     <div class="f-btn" id="footerStatus">● Online</div>
-    <div class="f-btn" id="muteBtn" onclick="toggleMute()" title="Silenciar notificações">🔔</div>
-    <div style="margin-left:auto;font-size:10px;color:#666;" id="footerUser"></div>
+    <div class="f-btn" id="muteBtn" onclick="toggleMute()">🔔</div>
+    <div style="margin-left:auto;font-size:10px;color:#666" id="footerUser"></div>
   </div>
 </div>
 
-<!-- NOTIFICATION POPUP -->
+<!-- NOTIF POPUP -->
 <div class="notif-popup" id="notifPopup">
   <div class="notif-avatar" id="notifAvatar">😊</div>
-  <div class="notif-body">
-    <div class="notif-name" id="notifName"></div>
-    <div class="notif-msg"  id="notifMsg"></div>
-  </div>
+  <div class="notif-body"><div class="notif-name" id="notifName"></div><div class="notif-msg" id="notifMsg"></div></div>
   <div class="notif-close" onclick="closeNotif()">✕</div>
 </div>
-
 <div class="toast" id="toast"></div>
-
-<!-- INSTALL BANNER -->
 <div class="install-banner" id="installBanner">
   <span style="font-size:28px">🦋</span>
-  <div class="install-banner-text">
-    <b>Adicionar à tela inicial</b>
-    Use o Messenger como app, com notificações!
-  </div>
+  <div class="install-banner-text"><b>Adicionar à tela inicial</b>Use o Messenger como app!</div>
   <button class="install-btn" id="installBtn">Instalar</button>
   <span class="install-dismiss" onclick="dismissInstall()">✕</span>
 </div>
 
-<!-- EDIT PROFILE MODAL -->
+<!-- EDIT MODAL -->
 <div class="modal-overlay" id="editModal">
   <div class="modal">
     <div class="modal-title"><span>✏️ Editar perfil</span><div class="tb-btn close" onclick="closeEdit()">✕</div></div>
     <div class="modal-body">
       <div>
-        <div class="m-label">Foto de perfil:</div>
+        <div class="m-label">Foto:</div>
         <div class="photo-area">
           <div class="photo-preview" id="photoPreview">😊</div>
           <div class="photo-btns">
-            <button class="photo-btn" onclick="document.getElementById('photoFileInput').click()">📁 Escolher foto</button>
-            <button class="photo-btn" onclick="removePhoto()">🗑️ Remover foto</button>
+            <button class="photo-btn" onclick="document.getElementById('photoFileInput').click()">📁 Escolher</button>
+            <button class="photo-btn" onclick="removePhoto()">🗑️ Remover</button>
             <input type="file" id="photoFileInput" accept="image/*" onchange="handlePhotoSelect(event)">
           </div>
         </div>
       </div>
-      <div>
-        <div class="m-label">Emoji (quando sem foto):</div>
-        <div class="emoji-picker" id="emojiPicker"></div>
-      </div>
+      <div><div class="m-label">Emoji (sem foto):</div><div class="emoji-picker" id="emojiPicker"></div></div>
       <div><div class="m-label">Nome de exibição:</div><input class="m-input" type="text" id="editDisplay" maxlength="40"></div>
       <div><div class="m-label">Recado pessoal:</div><input class="m-input" type="text" id="editMsg" maxlength="100"></div>
+      <div><div class="m-label">🎵 Música ouvindo agora:</div><input class="m-input" type="text" id="editSong" maxlength="80" placeholder="ex: Coldplay - The Scientist"></div>
+      <div>
+        <div class="m-label">Cor do nome:</div>
+        <div class="color-row" id="nameColorPicker"></div>
+      </div>
       <div class="modal-btns">
         <button class="m-btn" onclick="closeEdit()">Cancelar</button>
         <button class="m-btn primary" onclick="saveProfile()">💾 Salvar</button>
@@ -526,7 +356,7 @@
   </div>
 </div>
 
-<!-- VIEW CONTACT PROFILE MODAL -->
+<!-- PROFILE VIEW MODAL -->
 <div class="modal-overlay" id="profileModal">
   <div class="modal">
     <div class="modal-title"><span>👤 Perfil</span><div class="tb-btn close" onclick="closeProfileModal()">✕</div></div>
@@ -536,567 +366,470 @@
         <div class="pv-name" id="pvName"></div>
         <div class="pv-username" id="pvUsername"></div>
         <div class="pv-msg" id="pvMsg"></div>
+        <div class="pv-song" id="pvSong"></div>
         <div class="pv-status" id="pvStatus"></div>
       </div>
       <div class="modal-btns">
         <button class="m-btn" onclick="closeProfileModal()">Fechar</button>
+        <button class="m-btn" id="pvHistBtn">📋 Histórico</button>
+        <button class="m-btn danger" id="pvBlockBtn">🚫 Bloquear</button>
+        <button class="m-btn danger" id="pvRemoveBtn">🗑️ Remover</button>
         <button class="m-btn primary" id="pvChatBtn">💬 Conversar</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- NOTIFICATION SETTINGS MODAL -->
-<div class="modal-overlay" id="notifModal">
-  <div class="modal">
-    <div class="modal-title"><span>🔔 Notificações</span><div class="tb-btn close" onclick="closeNotifSettings()">✕</div></div>
+<!-- HISTORY MODAL -->
+<div class="modal-overlay" id="historyModal">
+  <div class="modal" style="width:340px">
+    <div class="modal-title"><span>📋 Histórico de conversa</span><div class="tb-btn close" onclick="document.getElementById('historyModal').classList.remove('show')">✕</div></div>
     <div class="modal-body">
-      <div class="notif-settings">
-        <div class="notif-row">
-          <div>
-            <div class="notif-row-label">Notificações do navegador</div>
-            <div class="notif-row-desc">Avisos mesmo com a janela minimizada</div>
-          </div>
-          <div class="toggle-btn" id="toggleBrowser" onclick="toggleBrowserNotif()"></div>
-        </div>
-        <div class="notif-row">
-          <div>
-            <div class="notif-row-label">Notificações na tela</div>
-            <div class="notif-row-desc">Popup no canto da tela</div>
-          </div>
-          <div class="toggle-btn on" id="togglePopup" onclick="togglePopupNotif()"></div>
-        </div>
-        <div class="notif-row">
-          <div>
-            <div class="notif-row-label">Som de notificação</div>
-            <div class="notif-row-desc">Bip ao receber mensagem</div>
-          </div>
-          <div class="toggle-btn on" id="toggleSound" onclick="toggleSoundNotif()"></div>
-        </div>
-        <div class="notif-row">
-          <div>
-            <div class="notif-row-label">Pedidos de amizade</div>
-            <div class="notif-row-desc">Notificar novos pedidos</div>
-          </div>
-          <div class="toggle-btn on" id="toggleRequests" onclick="toggleRequestsNotif()"></div>
-        </div>
-      </div>
+      <div class="history-list" id="historyList"><div style="padding:10px;text-align:center;color:#999">Selecione um contato.</div></div>
       <div class="modal-btns">
-        <button class="m-btn primary" onclick="closeNotifSettings()">OK</button>
+        <button class="m-btn primary" onclick="document.getElementById('historyModal').classList.remove('show')">Fechar</button>
       </div>
     </div>
   </div>
 </div>
 
+<!-- NOTIF SETTINGS MODAL -->
+<div class="modal-overlay" id="notifModal">
+  <div class="modal">
+    <div class="modal-title"><span>🔔 Notificações</span><div class="tb-btn close" onclick="closeNotifSettings()">✕</div></div>
+    <div class="modal-body">
+      <div class="notif-settings">
+        <div class="notif-row"><div><div class="notif-row-label">Notificações do navegador</div><div class="notif-row-desc">Avisos mesmo minimizado</div></div><div class="toggle-btn" id="toggleBrowser" onclick="toggleBrowserNotif()"></div></div>
+        <div class="notif-row"><div><div class="notif-row-label">Popup na tela</div><div class="notif-row-desc">Balão no canto</div></div><div class="toggle-btn on" id="togglePopup" onclick="togglePopupNotif()"></div></div>
+        <div class="notif-row"><div><div class="notif-row-label">Som</div><div class="notif-row-desc">Bip ao receber mensagem</div></div><div class="toggle-btn on" id="toggleSound" onclick="toggleSoundNotif()"></div></div>
+        <div class="notif-row"><div><div class="notif-row-label">Pedidos de amizade</div><div class="notif-row-desc">Notificar novos pedidos</div></div><div class="toggle-btn on" id="toggleRequests" onclick="toggleRequestsNotif()"></div></div>
+        <div class="notif-row"><div><div class="notif-row-label">Contato ficou online</div><div class="notif-row-desc">Avisar quando conectar</div></div><div class="toggle-btn on" id="toggleOnline" onclick="toggleOnlineNotif()"></div></div>
+      </div>
+      <div class="modal-btns"><button class="m-btn primary" onclick="closeNotifSettings()">OK</button></div>
+    </div>
+  </div>
+</div>
+
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs, onSnapshot, arrayUnion, arrayRemove, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getDatabase, ref, set, onValue, onDisconnect, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getAuth,onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import{getFirestore,doc,getDoc,getDocs,updateDoc,collection,query,orderBy,limit,onSnapshot,arrayUnion,arrayRemove}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import{getDatabase,ref,set,onValue,onDisconnect,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-const firebaseConfig = {
-  apiKey:            "AIzaSyDZkMLH3r5Vym9eE1YqHH8R_rWGR6_rWiw",
-  authDomain:        "mensageiro-992b3.firebaseapp.com",
-  projectId:         "mensageiro-992b3",
-  storageBucket:     "mensageiro-992b3.firebasestorage.app",
-  messagingSenderId: "484817145298",
-  appId:             "1:484817145298:web:cf5ec0ac2b197f9d2c4c0b",
-  databaseURL:       "https://mensageiro-992b3-default-rtdb.firebaseio.com"
+const cfg={apiKey:"AIzaSyDZkMLH3r5Vym9eE1YqHH8R_rWGR6_rWiw",authDomain:"mensageiro-992b3.firebaseapp.com",projectId:"mensageiro-992b3",storageBucket:"mensageiro-992b3.firebasestorage.app",messagingSenderId:"484817145298",appId:"1:484817145298:web:cf5ec0ac2b197f9d2c4c0b",databaseURL:"https://mensageiro-992b3-default-rtdb.firebaseio.com"};
+const app=initializeApp(cfg),auth=getAuth(app),db=getFirestore(app),rtdb=getDatabase(app);
+
+const EMOJIS=['😊','😎','🤔','😄','😢','😂','🥰','😜','🤩','😴','😤','👻','🎮','📚','🎵','⚽','🌸','🔥','✝️','🙏'];
+const COLORS=['#000000','#003399','#cc0000','#008800','#7755aa','#cc6600','#006688','#aa0066','#555555','#996633'];
+
+let myUid=null,myData=null,contactsData={},lastMsgData={};
+let pendingPhotoBase64=null,pendingRemovePhoto=false;
+let notifTimeout=null,pendingNotifUid=null;
+
+// ── NOTIF SETTINGS ──
+const NS={
+  browser:JSON.parse(localStorage.getItem('notif_browser')?? 'false'),
+  popup:JSON.parse(localStorage.getItem('notif_popup')?? 'true'),
+  sound:JSON.parse(localStorage.getItem('notif_sound')?? 'true'),
+  requests:JSON.parse(localStorage.getItem('notif_requests')?? 'true'),
+  online:JSON.parse(localStorage.getItem('notif_online')?? 'true'),
+  muted:JSON.parse(localStorage.getItem('notif_muted')?? 'false'),
 };
-
-const app  = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db   = getFirestore(app);
-const rtdb = getDatabase(app);
-
-const EMOJIS = ['😊','😎','🤔','😄','😢','😂','🥰','😜','🤩','😴','😤','👻','🎮','📚','🎵','⚽','🌸','🔥','✝️','🙏'];
-
-let myUid = null, myData = null, contactsData = {};
-let pendingPhotoBase64 = null, pendingRemovePhoto = false;
-let notifTimeout = null, pendingNotifUid = null;
-let lastMsgData = {}; // { uid: { text, fromMe, read, time } }
-
-// ===== NOTIFICATION SETTINGS =====
-const notifSettings = {
-  browser:  JSON.parse(localStorage.getItem('notif_browser')  ?? 'false'),
-  popup:    JSON.parse(localStorage.getItem('notif_popup')    ?? 'true'),
-  sound:    JSON.parse(localStorage.getItem('notif_sound')    ?? 'true'),
-  requests: JSON.parse(localStorage.getItem('notif_requests') ?? 'true'),
-  muted:    JSON.parse(localStorage.getItem('notif_muted')    ?? 'false'),
-};
-
-function saveNotifSettings() {
-  Object.keys(notifSettings).forEach(k => localStorage.setItem('notif_' + k, JSON.stringify(notifSettings[k])));
-}
-
-function syncNotifUI() {
-  ['browser','popup','sound','requests'].forEach(k => {
-    const el = document.getElementById('toggle' + k.charAt(0).toUpperCase() + k.slice(1));
-    if (el) el.classList.toggle('on', notifSettings[k]);
+function saveNS(){Object.keys(NS).forEach(k=>localStorage.setItem('notif_'+k,JSON.stringify(NS[k])))}
+function syncNSUI(){
+  ['browser','popup','sound','requests','online'].forEach(k=>{
+    const el=document.getElementById('toggle'+k[0].toUpperCase()+k.slice(1));
+    if(el)el.classList.toggle('on',NS[k]);
   });
-  const muteBtn = document.getElementById('muteBtn');
-  muteBtn.textContent = notifSettings.muted ? '🔕' : '🔔';
-  muteBtn.title = notifSettings.muted ? 'Ativar notificações' : 'Silenciar notificações';
-  const mobMute = document.getElementById('mobMuteBtn');
-  if (mobMute) { mobMute.textContent = notifSettings.muted ? '🔕' : '🔔'; }
+  document.getElementById('muteBtn').textContent=NS.muted?'🔕':'🔔';
+  const mm=document.getElementById('mobMuteBtn');if(mm)mm.textContent=NS.muted?'🔕':'🔔';
+}
+window.toggleMute=()=>{NS.muted=!NS.muted;saveNS();syncNSUI();showToast(NS.muted?'🔕 Silenciado':'🔔 Ativado')};
+window.toggleBrowserNotif=async()=>{if(!NS.browser){const p=await Notification.requestPermission();if(p!=='granted'){showToast('Permissão negada.');return}}NS.browser=!NS.browser;saveNS();syncNSUI()};
+window.togglePopupNotif=()=>{NS.popup=!NS.popup;saveNS();syncNSUI()};
+window.toggleSoundNotif=()=>{NS.sound=!NS.sound;saveNS();syncNSUI()};
+window.toggleRequestsNotif=()=>{NS.requests=!NS.requests;saveNS();syncNSUI()};
+window.toggleOnlineNotif=()=>{NS.online=!NS.online;saveNS();syncNSUI()};
+window.openNotifSettings=()=>{syncNSUI();document.getElementById('notifModal').classList.add('show')};
+window.closeNotifSettings=()=>document.getElementById('notifModal').classList.remove('show');
+
+// ── SOUND ──
+function playSound(type='msg'){
+  if(!NS.sound||NS.muted)return;
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const note=(freq,t,dur,vol=0.18)=>{
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.connect(g);g.connect(ctx.destination);o.type='sine';
+      o.frequency.setValueAtTime(freq,ctx.currentTime+t);
+      g.gain.setValueAtTime(0,ctx.currentTime+t);
+      g.gain.linearRampToValueAtTime(vol,ctx.currentTime+t+0.01);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+t+dur);
+      o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+dur+0.05);
+    };
+    if(type==='msg'){note(523,.0,.12);note(659,.13,.12);note(784,.26,.22)}
+    else if(type==='online'){note(880,.0,.08);note(1100,.10,.15)}
+    else if(type==='request'){note(440,.0,.1);note(550,.12,.1);note(660,.24,.18)}
+    else if(type==='nudge'){[0,.07,.14,.21].forEach((t,i)=>note(i%2===0?700:400,t,.06,.25))}
+  }catch(e){}
 }
 
-window.toggleMute = function() {
-  notifSettings.muted = !notifSettings.muted;
-  saveNotifSettings(); syncNotifUI();
-  showToast(notifSettings.muted ? '🔕 Notificações silenciadas' : '🔔 Notificações ativadas');
-};
-
-window.toggleBrowserNotif = async function() {
-  if (!notifSettings.browser) {
-    const perm = await Notification.requestPermission();
-    if (perm !== 'granted') { showToast('Permissão negada pelo navegador.'); return; }
+// ── NOTIFY ──
+function notify(uid,name,msg,avatarHtml,snd='msg'){
+  if(NS.muted)return;
+  playSound(snd);
+  if(NS.browser&&Notification.permission==='granted')
+    new Notification(name+(snd==='online'?' ficou online!':' diz:'),{body:msg,icon:'../favicon.svg',tag:'messenger',renotify:true});
+  if(NS.popup){
+    pendingNotifUid=uid;
+    document.getElementById('notifAvatar').innerHTML=avatarHtml;
+    document.getElementById('notifName').textContent=name+(snd==='online'?' ficou online!':' diz:');
+    document.getElementById('notifMsg').textContent=msg;
+    const p=document.getElementById('notifPopup');p.classList.add('show');
+    clearTimeout(notifTimeout);notifTimeout=setTimeout(()=>p.classList.remove('show'),6000);
   }
-  notifSettings.browser = !notifSettings.browser;
-  saveNotifSettings(); syncNotifUI();
-};
-window.togglePopupNotif    = function() { notifSettings.popup    = !notifSettings.popup;    saveNotifSettings(); syncNotifUI(); };
-window.toggleSoundNotif    = function() { notifSettings.sound    = !notifSettings.sound;    saveNotifSettings(); syncNotifUI(); };
-window.toggleRequestsNotif = function() { notifSettings.requests = !notifSettings.requests; saveNotifSettings(); syncNotifUI(); };
-
-window.openNotifSettings  = function() { syncNotifUI(); document.getElementById('notifModal').classList.add('show'); };
-window.closeNotifSettings = function() { document.getElementById('notifModal').classList.remove('show'); };
-
-// ===== NOTIFICATION DISPATCH =====
-function notify(uid, name, message, avatarHtml) {
-  if (notifSettings.muted) return;
-
-  // Sound — MSN classic "nudge" style
-  if (notifSettings.sound) {
-    try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const playNote = (freq, start, dur, vol = 0.18) => {
-        const osc = ctx.createOscillator(); const gain = ctx.createGain();
-        osc.connect(gain); gain.connect(ctx.destination);
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, ctx.currentTime + start);
-        gain.gain.setValueAtTime(0, ctx.currentTime + start);
-        gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + start + 0.01);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + dur);
-        osc.start(ctx.currentTime + start);
-        osc.stop(ctx.currentTime + start + dur + 0.05);
-      };
-      // MSN-style: three ascending notes
-      playNote(523, 0.00, 0.12); // C5
-      playNote(659, 0.13, 0.12); // E5
-      playNote(784, 0.26, 0.22); // G5
-    } catch(e) {}
-  }
-
-  // Browser notification
-  if (notifSettings.browser && Notification.permission === 'granted') {
-    new Notification(name + ' diz:', { body: message, icon: '../favicon.svg', tag: 'messenger-notif', renotify: true });
-  }
-
-  // Popup
-  if (notifSettings.popup) {
-    pendingNotifUid = uid;
-    document.getElementById('notifAvatar').innerHTML = avatarHtml;
-    document.getElementById('notifName').textContent = name + ' diz:';
-    document.getElementById('notifMsg').textContent  = message;
-    const popup = document.getElementById('notifPopup');
-    popup.classList.add('show');
-    clearTimeout(notifTimeout);
-    notifTimeout = setTimeout(() => popup.classList.remove('show'), 6000);
-  }
-
-  // Title blink — always when window not focused
-  if (!document.hasFocus()) {
-    let blink = true;
-    const orig = document.title;
-    const iv = setInterval(() => { document.title = blink ? '💬 ' + name + ' diz...' : orig; blink = !blink; }, 900);
-    const stop = () => { clearInterval(iv); document.title = orig; };
-    window.addEventListener('focus', stop, { once: true });
+  if(!document.hasFocus()){
+    let blink=true;const orig=document.title;
+    const iv=setInterval(()=>{document.title=blink?'💬 '+name+' diz...':orig;blink=!blink},900);
+    window.addEventListener('focus',()=>{clearInterval(iv);document.title=orig},{once:true});
   }
 }
-
-window.closeNotif = function() { document.getElementById('notifPopup').classList.remove('show'); };
-
-window.handleNotifClick = function() {
-  closeNotif();
-  if (pendingNotifUid) openChat(pendingNotifUid);
-};
-document.getElementById('notifPopup').addEventListener('click', e => {
-  if (!e.target.classList.contains('notif-close')) window.handleNotifClick();
+window.closeNotif=()=>document.getElementById('notifPopup').classList.remove('show');
+document.getElementById('notifPopup').addEventListener('click',e=>{
+  if(!e.target.classList.contains('notif-close')){closeNotif();if(pendingNotifUid)window.location.href=`chat.html?with=${pendingNotifUid}`}
 });
 
-// ===== AUTH =====
-onAuthStateChanged(auth, async user => {
-  if (!user) { window.location.href = '../index.html'; return; }
-  myUid = user.uid;
+// ── AUTH ──
+onAuthStateChanged(auth,async user=>{
+  if(!user){window.location.href='../index.html';return}
+  myUid=user.uid;
   await loadMyProfile();
-  setupPresence();
-  listenContacts();
-  listenRequests();
-  listenLastMessages();
-  syncNotifUI();
+  setupPresence();listenContacts();listenRequests();syncNSUI();
   document.getElementById('loading').classList.add('hidden');
-
-  // Request browser permission if enabled
-  if (notifSettings.browser && Notification.permission === 'default') {
-    Notification.requestPermission();
-  }
+  if(NS.browser&&Notification.permission==='default')Notification.requestPermission();
 });
 
-async function loadMyProfile() {
-  const snap = await getDoc(doc(db, 'users', myUid));
-  if (!snap.exists()) return;
-  myData = snap.data();
-  renderMyProfile();
+async function loadMyProfile(){
+  const s=await getDoc(doc(db,'users',myUid));
+  if(s.exists()){myData=s.data();renderMyProfile()}
 }
 
-function renderMyProfile() {
-  const av = document.getElementById('myAvatar');
-  if (myData.photoBase64) av.innerHTML = `<img src="${myData.photoBase64}" alt="">`;
-  else av.textContent = myData.emoji || '😊';
-  document.getElementById('myName').textContent     = myData.display || myData.username;
-  document.getElementById('myMsg').textContent      = myData.message || 'Clique para adicionar recado...';
-  document.getElementById('footerUser').textContent = '@' + myData.username;
-  document.getElementById('statusSel').value        = myData.status || 'online';
-  updateStatusDot(myData.status || 'online');
+function renderMyProfile(){
+  const av=document.getElementById('myAvatar');
+  if(myData.photoBase64)av.innerHTML=`<img src="${myData.photoBase64}" alt="">`;
+  else av.textContent=myData.emoji||'😊';
+  const nm=document.getElementById('myName');
+  nm.textContent=myData.display||myData.username;
+  nm.style.color=myData.nameColor||'#003399';
+  document.getElementById('myMsg').textContent=myData.message||'Clique para editar...';
+  const se=document.getElementById('mySong');
+  if(myData.song){se.textContent='🎵 '+myData.song;se.style.display='block'}else se.style.display='none';
+  document.getElementById('footerUser').textContent='@'+myData.username;
+  document.getElementById('statusSel').value=myData.status||'online';
+  updateStatusDot(myData.status||'online');
 }
 
-function setupPresence() {
-  const statusRef = ref(rtdb, `status/${myUid}`);
-  onValue(ref(rtdb, '.info/connected'), snap => {
-    if (!snap.val()) return;
-    onDisconnect(statusRef).set({ state: 'offline', lastSeen: serverTimestamp() });
-    set(statusRef, { state: 'online', lastSeen: serverTimestamp() });
+function setupPresence(){
+  const sr=ref(rtdb,`status/${myUid}`);
+  onValue(ref(rtdb,'.info/connected'),s=>{
+    if(!s.val())return;
+    onDisconnect(sr).set({state:'offline',lastSeen:serverTimestamp()});
+    set(sr,{state:'online',lastSeen:serverTimestamp()});
   });
 }
 
-window.changeStatus = async function() {
-  const s = document.getElementById('statusSel').value;
+window.changeStatus=async()=>{
+  const s=document.getElementById('statusSel').value;
   updateStatusDot(s);
-  await updateDoc(doc(db, 'users', myUid), { status: s });
-  set(ref(rtdb, `status/${myUid}`), { state: s, lastSeen: serverTimestamp() });
+  await updateDoc(doc(db,'users',myUid),{status:s});
+  set(ref(rtdb,`status/${myUid}`),{state:s,lastSeen:serverTimestamp()});
 };
 
-function updateStatusDot(s) {
-  document.getElementById('myStatusDot').className = 'status-dot s-' + s;
-  document.getElementById('footerStatus').textContent =
-    { online:'● Online', away:'● Ausente', busy:'● Ocupado', offline:'● Offline' }[s] || '● Online';
+function updateStatusDot(s){
+  document.getElementById('myStatusDot').className='status-dot s-'+s;
+  document.getElementById('footerStatus').textContent={online:'● Online',away:'● Ausente',busy:'● Ocupado',offline:'● Offline'}[s]||'● Online';
 }
 
-window.switchPanel = function(name) {
-  ['contacts','requests'].forEach(p => {
-    document.getElementById('panel-' + p).classList.toggle('active', p === name);
-    document.getElementById('tab-' + p).classList.toggle('active', p === name);
+window.switchPanel=name=>{
+  ['contacts','requests'].forEach(p=>{
+    document.getElementById('panel-'+p).classList.toggle('active',p===name);
+    document.getElementById('tab-'+p).classList.toggle('active',p===name);
   });
 };
 
-function listenContacts() {
-  onSnapshot(doc(db, 'users', myUid), async snap => {
-    if (!snap.exists()) return;
-    myData = snap.data();
-    renderMyProfile();
-    const contacts = myData.contacts || [];
-    const prevData = { ...contactsData };
-    contactsData = {};
-    for (const uid of contacts) {
-      const s = await getDoc(doc(db, 'users', uid));
-      if (s.exists()) {
-        const newData = s.data();
-        // Notify if contact came online
-        if (prevData[uid] && prevData[uid].status !== 'online' && newData.status === 'online') {
-          const avatarHtml = newData.photoBase64 ? `<img src="${newData.photoBase64}" alt="">` : (newData.emoji || '😊');
-          notify(uid, newData.display || newData.username, 'Ficou online agora! 🟢', avatarHtml);
+// ── CONTACTS ──
+function listenContacts(){
+  onSnapshot(doc(db,'users',myUid),async snap=>{
+    if(!snap.exists())return;
+    const prev={...contactsData};
+    myData=snap.data();renderMyProfile();
+    contactsData={};
+    for(const uid of myData.contacts||[]){
+      const s=await getDoc(doc(db,'users',uid));
+      if(s.exists()){
+        const nd=s.data();
+        if(prev[uid]&&prev[uid].status!=='online'&&nd.status==='online'&&NS.online){
+          const ah=nd.photoBase64?`<img src="${nd.photoBase64}" alt="">`:(nd.emoji||'😊');
+          notify(uid,nd.display||nd.username,'Ficou online! 🟢',ah,'online');
         }
-        contactsData[uid] = newData;
+        contactsData[uid]=nd;
       }
     }
-    renderContacts();
+    renderContacts();listenLastMessages();
   });
 }
 
-function listenLastMessages() {
-  const contacts = myData?.contacts || [];
-  contacts.forEach(uid => {
-    const chatId = [myUid, uid].sort().join('_');
-    const msgsRef = collection(db, 'chats', chatId, 'messages');
-    const q = query(msgsRef, orderBy('createdAt', 'desc'), limit(1));
-    onSnapshot(q, snap => {
-      if (snap.empty) { lastMsgData[uid] = null; }
-      else {
-        const d = snap.docs[0].data();
-        lastMsgData[uid] = {
-          text: d.text || '',
-          fromMe: d.senderUid === myUid,
-          time: d.createdAt?.toDate ? d.createdAt.toDate() : null,
-          read: d.readBy ? d.readBy.includes(myUid) : d.senderUid === myUid,
-        };
-      }
+function listenLastMessages(){
+  (myData?.contacts||[]).forEach(uid=>{
+    const cid=[myUid,uid].sort().join('_');
+    const q=query(collection(db,'chats',cid,'messages'),orderBy('createdAt','desc'),limit(1));
+    onSnapshot(q,snap=>{
+      lastMsgData[uid]=snap.empty?null:{
+        text:snap.docs[0].data().text||'',
+        fromMe:snap.docs[0].data().senderUid===myUid,
+        time:snap.docs[0].data().createdAt?.toDate?snap.docs[0].data().createdAt.toDate():null,
+        read:snap.docs[0].data().readBy?snap.docs[0].data().readBy.includes(myUid):snap.docs[0].data().senderUid===myUid,
+      };
       renderContacts();
     });
   });
 }
 
-window.renderContacts = function() {
-  const filter = (document.getElementById('searchInput').value || '').toLowerCase();
-  const area   = document.getElementById('contactsArea');
-  const list   = Object.values(contactsData).filter(c =>
-    !filter || (c.display||'').toLowerCase().includes(filter) || (c.username||'').toLowerCase().includes(filter)
+window.renderContacts=()=>{
+  const filter=(document.getElementById('searchInput').value||'').toLowerCase();
+  const area=document.getElementById('contactsArea');
+  const blocked=myData?.blocked||[];
+  const all=Object.values(contactsData).filter(c=>
+    !filter||(c.display||'').toLowerCase().includes(filter)||(c.username||'').toLowerCase().includes(filter)
   );
-
-  if (list.length === 0) {
-    area.innerHTML = `<div class="empty-msg">${filter ? 'Nenhum contato encontrado.' : 'Nenhum contato ainda.<br>Adicione pelo nome de usuário abaixo.'}</div>`;
-    return;
-  }
-
-  const order = { online:0, away:1, busy:2, offline:3 };
-  list.sort((a,b) => (order[a.status]||3) - (order[b.status]||3));
-  area.innerHTML = '';
-
-  const online = list.filter(c => c.status !== 'offline').length;
-  const header = document.createElement('div');
-  header.className = 'group-header';
-  header.innerHTML = `<span class="group-arrow" id="garrow">▼</span><span class="group-name">Contatos</span><span class="group-count">${online}/${list.length}</span>`;
-  header.onclick = () => { document.getElementById('glist').classList.toggle('hidden'); document.getElementById('garrow').classList.toggle('col'); };
-  area.appendChild(header);
-
-  const gl = document.createElement('div');
-  gl.className = 'group-list'; gl.id = 'glist';
-  list.forEach(c => {
-    const item = document.createElement('div');
-    const lm = lastMsgData[c.uid];
-    const unread = lm && !lm.read && !lm.fromMe;
-    item.className = 'contact-item' + (unread ? ' unread-item' : '');
-    const avatarHtml = c.photoBase64 ? `<img src="${c.photoBase64}" alt="">` : (c.emoji || '😊');
-    let lastMsgHtml = '';
-    if (lm) {
-      const prefix = lm.fromMe ? '<span class="lm-me">Eu: </span>' : '';
-      const readDot = lm.fromMe
-        ? `<span class="lm-read">${lm.read ? '✓✓' : '✓'}</span>`
-        : (unread ? '<span class="lm-unread-dot"></span>' : '');
-      const timeStr = lm.time ? lm.time.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' }) : '';
-      lastMsgHtml = `<div class="lm-row">${readDot}${prefix}<span class="lm-text">${escHtml(lm.text)}</span><span class="lm-time">${timeStr}</span></div>`;
+  if(!all.length){area.innerHTML=`<div class="empty-msg">${filter?'Nenhum contato encontrado.':'Nenhum contato ainda.<br>Adicione abaixo.'}</div>`;return}
+  const ord={online:0,away:1,busy:2,offline:3};
+  all.sort((a,b)=>(ord[a.status]||3)-(ord[b.status]||3));
+  area.innerHTML='';
+  const online=all.filter(c=>c.status!=='offline').length;
+  const hdr=document.createElement('div');hdr.className='group-header';
+  hdr.innerHTML=`<span class="group-arrow" id="garrow">▼</span><span class="group-name">Contatos</span><span class="group-count">${online}/${all.length}</span>`;
+  hdr.onclick=()=>{document.getElementById('glist').classList.toggle('hidden');document.getElementById('garrow').classList.toggle('col')};
+  area.appendChild(hdr);
+  const gl=document.createElement('div');gl.className='group-list';gl.id='glist';
+  all.forEach(c=>{
+    const lm=lastMsgData[c.uid];
+    const unread=lm&&!lm.read&&!lm.fromMe;
+    const isBlocked=blocked.includes(c.uid);
+    const item=document.createElement('div');
+    item.className='contact-item'+(unread?' unread-item':'')+(isBlocked?' blocked-item':'');
+    const ah=c.photoBase64?`<img src="${c.photoBase64}" alt="">`:(c.emoji||'😊');
+    let lmHtml='';
+    if(lm){
+      const pfx=lm.fromMe?'<span class="lm-me">Eu: </span>':'';
+      const rd=lm.fromMe?`<span class="lm-read">${lm.read?'✓✓':'✓'}</span>`:(unread?'<span class="lm-unread-dot"></span>':'');
+      const t=lm.time?lm.time.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'';
+      lmHtml=`<div class="lm-row">${rd}${pfx}<span class="lm-text">${escHtml(lm.text)}</span><span class="lm-time">${t}</span></div>`;
     }
-    item.innerHTML = `
-      <div class="contact-avatar">${avatarHtml}<div class="c-dot s-${c.status||'offline'}"></div></div>
+    const songHtml=c.song?`<div class="c-song">🎵 ${escHtml(c.song)}</div>`:'';
+    item.innerHTML=`
+      <div class="contact-avatar">${ah}<div class="c-dot s-${c.status||'offline'}"></div></div>
       <div class="contact-info">
-        <div class="c-name-row"><span class="c-name${unread ? ' c-name-bold' : ''}">${escHtml(c.display || c.username)}</span></div>
-        ${lastMsgHtml || `<div class="c-msg">${escHtml(c.message || '')}</div>`}
+        <div class="c-name-row">
+          <span class="c-name${unread?' c-name-bold':''}" style="color:${c.nameColor||'#000'}">${escHtml(c.display||c.username)}</span>
+        </div>
+        ${lmHtml||(c.song?`<div class="c-msg">${escHtml(c.message||'')}</div>${songHtml}`:`<div class="c-msg">${escHtml(c.message||'')}</div>`)}
+      </div>
+      <div class="c-actions">
+        <div class="c-act-btn" title="Histórico" onclick="event.stopPropagation();openHistory('${c.uid}')">📋</div>
+        <div class="c-act-btn" title="${isBlocked?'Desbloquear':'Bloquear'}" onclick="event.stopPropagation();toggleBlock('${c.uid}')">${isBlocked?'🔓':'🚫'}</div>
+        <div class="c-act-btn" title="Remover" onclick="event.stopPropagation();confirmRemove('${c.uid}')">🗑️</div>
       </div>`;
-    item.onclick = () => openChat(c.uid);
+    item.onclick=()=>isBlocked?showToast('Contato bloqueado.'):window.location.href=`chat.html?with=${c.uid}`;
     gl.appendChild(item);
   });
   area.appendChild(gl);
 };
 
-window.sendRequest = async function() {
-  const username = document.getElementById('addInput').value.trim().toLowerCase();
-  if (!username) return;
-  if (username === myData?.username) { showToast('Você não pode se adicionar.'); return; }
-
-  // Busca direto pelo ID do documento (username é o ID)
-  const unameSnap = await getDoc(doc(db, 'usernames', username));
-  if (!unameSnap.exists()) { showToast('Usuário não encontrado: @' + username); return; }
-
-  const targetUid = unameSnap.data().uid;
-  if (contactsData[targetUid]) { showToast('Contato já adicionado.'); return; }
-
-  const targetSnap = await getDoc(doc(db, 'users', targetUid));
-  if (!targetSnap.exists()) { showToast('Usuário não encontrado.'); return; }
-
-  const pending = targetSnap.data()?.pendingRequests || [];
-  if (pending.includes(myUid)) { showToast('Pedido já enviado.'); return; }
-
-  await updateDoc(doc(db, 'users', targetUid), { pendingRequests: arrayUnion(myUid) });
-  document.getElementById('addInput').value = '';
-  showToast('✅ Pedido enviado para @' + username);
+// ── ADD / REQUESTS ──
+window.sendRequest=async()=>{
+  const username=document.getElementById('addInput').value.trim().toLowerCase();
+  if(!username)return;
+  if(username===myData?.username){showToast('Você não pode se adicionar.');return}
+  const us=await getDoc(doc(db,'usernames',username));
+  if(!us.exists()){showToast('Usuário não encontrado: @'+username);return}
+  const tuid=us.data().uid;
+  if(contactsData[tuid]){showToast('Contato já adicionado.');return}
+  const ts=await getDoc(doc(db,'users',tuid));
+  if(!ts.exists()){showToast('Usuário não encontrado.');return}
+  if((ts.data()?.pendingRequests||[]).includes(myUid)){showToast('Pedido já enviado.');return}
+  await updateDoc(doc(db,'users',tuid),{pendingRequests:arrayUnion(myUid)});
+  document.getElementById('addInput').value='';
+  showToast('✅ Pedido enviado para @'+username);
 };
 
-function listenRequests() {
-  let firstLoad = true;
-  onSnapshot(doc(db, 'users', myUid), async snap => {
-    if (!snap.exists()) return;
-    const data = snap.data();
-    const pending = data.pendingRequests || [];
-    const badge = document.getElementById('reqBadge');
-    badge.style.display = pending.length > 0 ? 'inline' : 'none';
-    badge.textContent = pending.length;
-
-    // Notify new request
-    if (!firstLoad && pending.length > 0 && notifSettings.requests) {
-      const uid = pending[pending.length - 1];
-      const s = await getDoc(doc(db, 'users', uid));
-      if (s.exists()) {
-        const c = s.data();
-        const avatarHtml = c.photoBase64 ? `<img src="${c.photoBase64}" alt="">` : (c.emoji || '😊');
-        notify(uid, c.display || c.username, 'enviou um pedido de amizade!', avatarHtml);
-      }
+function listenRequests(){
+  let first=true;
+  onSnapshot(doc(db,'users',myUid),async snap=>{
+    if(!snap.exists())return;
+    const pending=snap.data().pendingRequests||[];
+    const badge=document.getElementById('reqBadge');
+    badge.style.display=pending.length?'inline':'none';badge.textContent=pending.length;
+    if(!first&&pending.length&&NS.requests){
+      const uid=pending[pending.length-1];
+      const s=await getDoc(doc(db,'users',uid));
+      if(s.exists()){const c=s.data();const ah=c.photoBase64?`<img src="${c.photoBase64}" alt="">`:(c.emoji||'😊');notify(uid,c.display||c.username,'enviou pedido de amizade!',ah,'request')}
     }
-    firstLoad = false;
-
-    const area = document.getElementById('requestsArea');
-    if (pending.length === 0) { area.innerHTML = '<div class="empty-msg">Nenhum pedido pendente.</div>'; return; }
-
-    area.innerHTML = '';
-    for (const uid of pending) {
-      const s = await getDoc(doc(db, 'users', uid));
-      if (!s.exists()) continue;
-      const c = s.data();
-      const item = document.createElement('div');
-      item.className = 'request-item';
-      const avatarHtml = c.photoBase64 ? `<img src="${c.photoBase64}" alt="">` : (c.emoji || '😊');
-      item.innerHTML = `
-        <div class="req-avatar">${avatarHtml}</div>
-        <div class="req-info">
-          <div class="req-name">${escHtml(c.display || c.username)}</div>
-          <div class="req-sub">@${escHtml(c.username)} quer ser seu contato</div>
-        </div>
-        <div class="req-btns">
-          <button class="req-btn accept" onclick="acceptRequest('${uid}')">✔</button>
-          <button class="req-btn decline" onclick="declineRequest('${uid}')">✘</button>
-        </div>`;
+    first=false;
+    const area=document.getElementById('requestsArea');
+    if(!pending.length){area.innerHTML='<div class="empty-msg">Nenhum pedido pendente.</div>';return}
+    area.innerHTML='';
+    for(const uid of pending){
+      const s=await getDoc(doc(db,'users',uid));if(!s.exists())continue;
+      const c=s.data();const item=document.createElement('div');item.className='request-item';
+      const ah=c.photoBase64?`<img src="${c.photoBase64}" alt="">`:(c.emoji||'😊');
+      item.innerHTML=`<div class="req-avatar">${ah}</div><div class="req-info"><div class="req-name">${escHtml(c.display||c.username)}</div><div class="req-sub">@${escHtml(c.username)} quer ser seu contato</div></div><div class="req-btns"><button class="req-btn accept" onclick="acceptRequest('${uid}')">✔</button><button class="req-btn decline" onclick="declineRequest('${uid}')">✘</button></div>`;
       area.appendChild(item);
     }
   });
 }
-
-window.acceptRequest = async function(uid) {
-  await updateDoc(doc(db, 'users', myUid), { contacts: arrayUnion(uid), pendingRequests: arrayRemove(uid) });
-  await updateDoc(doc(db, 'users', uid), { contacts: arrayUnion(myUid) });
+window.acceptRequest=async uid=>{
+  await updateDoc(doc(db,'users',myUid),{contacts:arrayUnion(uid),pendingRequests:arrayRemove(uid)});
+  await updateDoc(doc(db,'users',uid),{contacts:arrayUnion(myUid)});
   showToast('✅ Contato adicionado!');
 };
+window.declineRequest=async uid=>{await updateDoc(doc(db,'users',myUid),{pendingRequests:arrayRemove(uid)});showToast('Pedido recusado.')};
 
-window.declineRequest = async function(uid) {
-  await updateDoc(doc(db, 'users', myUid), { pendingRequests: arrayRemove(uid) });
-  showToast('Pedido recusado.');
+// ── BLOCK / REMOVE ──
+window.toggleBlock=async uid=>{
+  const isBlocked=(myData?.blocked||[]).includes(uid);
+  await updateDoc(doc(db,'users',myUid),{blocked:isBlocked?arrayRemove(uid):arrayUnion(uid)});
+  showToast(isBlocked?'🔓 Desbloqueado':'🚫 Bloqueado');
+};
+window.confirmRemove=uid=>{
+  const c=contactsData[uid];
+  if(!confirm(`Remover ${c?.display||c?.username} dos contatos?`))return;
+  removeContact(uid);
+};
+async function removeContact(uid){
+  await updateDoc(doc(db,'users',myUid),{contacts:arrayRemove(uid)});
+  await updateDoc(doc(db,'users',uid),{contacts:arrayRemove(myUid)});
+  showToast('Contato removido.');closeProfileModal();
+}
+
+// ── HISTORY ──
+window.openHistory=async uid=>{
+  document.getElementById('historyModal').classList.add('show');
+  const list=document.getElementById('historyList');
+  list.innerHTML='<div style="padding:10px;text-align:center;color:#999">Carregando...</div>';
+  const c=contactsData[uid];
+  const cid=[myUid,uid].sort().join('_');
+  const q=query(collection(db,'chats',cid,'messages'),orderBy('createdAt','desc'),limit(60));
+  const snap=await getDocs(q);
+  if(snap.empty){list.innerHTML='<div style="padding:10px;text-align:center;color:#999">Sem histórico ainda.</div>';return}
+  list.innerHTML='';
+  [...snap.docs].reverse().forEach(d=>{
+    const data=d.data();const item=document.createElement('div');
+    if(data.type==='nudge'||data.type==='system'){
+      item.className='history-item h-system';item.innerHTML=`<span>${escHtml(data.text)}</span>`;
+    }else{
+      const mine=data.senderUid===myUid;
+      const name=mine?(myData?.display||myData?.username):(c?.display||c?.username||'?');
+      const t=data.createdAt?.toDate?data.createdAt.toDate().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
+      item.className='history-item '+(mine?'h-mine':'h-theirs');
+      item.innerHTML=`<span class="h-name">${escHtml(name)}</span><span class="h-text">${escHtml(data.text)}</span><span class="h-time">${t}</span>`;
+    }
+    list.appendChild(item);
+  });
 };
 
-window.openProfileModal = function(uid) {
-  const c = contactsData[uid];
-  if (!c) return;
-  const av = document.getElementById('pvAvatar');
-  if (c.photoBase64) av.innerHTML = `<img src="${c.photoBase64}" alt="">`;
-  else av.textContent = c.emoji || '😊';
-  document.getElementById('pvName').textContent     = c.display || c.username;
-  document.getElementById('pvUsername').textContent = '@' + c.username;
-  document.getElementById('pvMsg').textContent      = c.message || '';
-  const statusLabel = { online:'Online', away:'Ausente', busy:'Ocupado', offline:'Offline' }[c.status||'offline'];
-  document.getElementById('pvStatus').innerHTML = `<span class="c-dot s-${c.status||'offline'}" style="position:static;display:inline-block;width:8px;height:8px;border-radius:50%;border:1px solid #ccc;"></span> ${statusLabel}`;
-  document.getElementById('pvChatBtn').onclick = () => { closeProfileModal(); openChat(uid); };
+// ── PROFILE MODAL ──
+window.openProfileModal=uid=>{
+  const c=contactsData[uid];if(!c)return;
+  const av=document.getElementById('pvAvatar');
+  if(c.photoBase64)av.innerHTML=`<img src="${c.photoBase64}" alt="">`;else av.textContent=c.emoji||'😊';
+  const nm=document.getElementById('pvName');nm.textContent=c.display||c.username;nm.style.color=c.nameColor||'#003399';
+  document.getElementById('pvUsername').textContent='@'+c.username;
+  document.getElementById('pvMsg').textContent=c.message||'';
+  const se=document.getElementById('pvSong');
+  if(c.song){se.textContent='🎵 '+c.song;se.style.display='block'}else se.style.display='none';
+  const sl={online:'Online',away:'Ausente',busy:'Ocupado',offline:'Offline'}[c.status||'offline'];
+  document.getElementById('pvStatus').innerHTML=`<span class="c-dot s-${c.status||'offline'}" style="position:static;display:inline-block;width:8px;height:8px;border-radius:50%;border:1px solid #ccc"></span> ${sl}`;
+  const isBlocked=(myData?.blocked||[]).includes(uid);
+  document.getElementById('pvBlockBtn').textContent=isBlocked?'🔓 Desbloquear':'🚫 Bloquear';
+  document.getElementById('pvBlockBtn').onclick=()=>{toggleBlock(uid);closeProfileModal()};
+  document.getElementById('pvRemoveBtn').onclick=()=>confirmRemove(uid);
+  document.getElementById('pvHistBtn').onclick=()=>{closeProfileModal();openHistory(uid)};
+  document.getElementById('pvChatBtn').onclick=()=>{closeProfileModal();window.location.href=`chat.html?with=${uid}`};
   document.getElementById('profileModal').classList.add('show');
 };
-window.closeProfileModal = function() { document.getElementById('profileModal').classList.remove('show'); };
-window.openChat = function(uid) { window.location.href = `chat.html?with=${uid}`; };
+window.closeProfileModal=()=>document.getElementById('profileModal').classList.remove('show');
 
-window.openEdit = function() {
-  if (!myData) return;
-  pendingPhotoBase64 = null; pendingRemovePhoto = false;
-  const prev = document.getElementById('photoPreview');
-  if (myData.photoBase64) prev.innerHTML = `<img src="${myData.photoBase64}" alt="">`;
-  else prev.textContent = myData.emoji || '😊';
-  const picker = document.getElementById('emojiPicker');
-  picker.innerHTML = '';
-  EMOJIS.forEach(em => {
-    const span = document.createElement('span');
-    span.className = 'emoji-opt' + (em === (myData.emoji||'😊') ? ' selected' : '');
-    span.textContent = em;
-    span.onclick = () => { document.querySelectorAll('.emoji-opt').forEach(e => e.classList.remove('selected')); span.classList.add('selected'); };
-    picker.appendChild(span);
+// ── EDIT PROFILE ──
+window.openEdit=()=>{
+  if(!myData)return;
+  pendingPhotoBase64=null;pendingRemovePhoto=false;
+  const pp=document.getElementById('photoPreview');
+  if(myData.photoBase64)pp.innerHTML=`<img src="${myData.photoBase64}" alt="">`;else pp.textContent=myData.emoji||'😊';
+  const picker=document.getElementById('emojiPicker');picker.innerHTML='';
+  EMOJIS.forEach(em=>{
+    const s=document.createElement('span');s.className='emoji-opt'+(em===(myData.emoji||'😊')?' selected':'');s.textContent=em;
+    s.onclick=()=>{document.querySelectorAll('.emoji-opt').forEach(e=>e.classList.remove('selected'));s.classList.add('selected')};
+    picker.appendChild(s);
   });
-  document.getElementById('editDisplay').value = myData.display || '';
-  document.getElementById('editMsg').value     = myData.message || '';
+  document.getElementById('editDisplay').value=myData.display||'';
+  document.getElementById('editMsg').value=myData.message||'';
+  document.getElementById('editSong').value=myData.song||'';
+  const cp=document.getElementById('nameColorPicker');cp.innerHTML='';
+  COLORS.forEach(col=>{
+    const d=document.createElement('div');d.className='color-opt'+(col===(myData.nameColor||'#000000')?' selected':'');
+    d.style.background=col;d.title=col;
+    d.onclick=()=>{document.querySelectorAll('.color-opt').forEach(e=>e.classList.remove('selected'));d.classList.add('selected')};
+    cp.appendChild(d);
+  });
   document.getElementById('editModal').classList.add('show');
 };
-window.closeEdit = function() { document.getElementById('editModal').classList.remove('show'); };
-
-window.handlePhotoSelect = function(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  if (file.size > 500000) { showToast('Foto muito grande. Máximo 500KB.'); return; }
-  const reader = new FileReader();
-  reader.onload = e => {
-    pendingPhotoBase64 = e.target.result; pendingRemovePhoto = false;
-    document.getElementById('photoPreview').innerHTML = `<img src="${pendingPhotoBase64}" alt="">`;
-  };
-  reader.readAsDataURL(file);
+window.closeEdit=()=>document.getElementById('editModal').classList.remove('show');
+window.handlePhotoSelect=event=>{
+  const file=event.target.files[0];if(!file)return;
+  if(file.size>500000){showToast('Foto muito grande. Máx 500KB.');return}
+  const r=new FileReader();
+  r.onload=e=>{pendingPhotoBase64=e.target.result;pendingRemovePhoto=false;document.getElementById('photoPreview').innerHTML=`<img src="${pendingPhotoBase64}" alt="">`};
+  r.readAsDataURL(file);
+};
+window.removePhoto=()=>{
+  pendingRemovePhoto=true;pendingPhotoBase64=null;
+  document.getElementById('photoPreview').textContent=document.querySelector('.emoji-opt.selected')?.textContent||myData?.emoji||'😊';
+};
+window.saveProfile=async()=>{
+  const display=document.getElementById('editDisplay').value.trim();
+  const message=document.getElementById('editMsg').value.trim();
+  const song=document.getElementById('editSong').value.trim();
+  const emoji=document.querySelector('.emoji-opt.selected')?.textContent||'😊';
+  const nameColor=document.querySelector('.color-opt.selected')?.style.background||'#000000';
+  if(!display){showToast('Nome não pode ser vazio.');return}
+  const upd={display,message,song,emoji,nameColor};
+  if(pendingPhotoBase64)upd.photoBase64=pendingPhotoBase64;
+  if(pendingRemovePhoto)upd.photoBase64='';
+  await updateDoc(doc(db,'users',myUid),upd);
+  myData={...myData,...upd};renderMyProfile();
+  closeEdit();showToast('✅ Perfil salvo!');
 };
 
-window.removePhoto = function() {
-  pendingRemovePhoto = true; pendingPhotoBase64 = null;
-  document.getElementById('photoPreview').textContent = document.querySelector('.emoji-opt.selected')?.textContent || myData?.emoji || '😊';
-};
-
-window.saveProfile = async function() {
-  const display = document.getElementById('editDisplay').value.trim();
-  const message = document.getElementById('editMsg').value.trim();
-  const emoji   = document.querySelector('.emoji-opt.selected')?.textContent || '😊';
-  if (!display) { showToast('Nome não pode ser vazio.'); return; }
-  const update = { display, message, emoji };
-  if (pendingPhotoBase64) update.photoBase64 = pendingPhotoBase64;
-  if (pendingRemovePhoto) update.photoBase64 = '';
-  await updateDoc(doc(db, 'users', myUid), update);
-  // Update local myData and re-render immediately
-  myData = { ...myData, ...update };
-  renderMyProfile();
-  closeEdit(); showToast('✅ Perfil salvo!');
-};
-
-window.doSignOut = async function() {
-  if (confirm('Deseja sair do Messenger?')) {
-    await set(ref(rtdb, `status/${myUid}`), { state: 'offline', lastSeen: serverTimestamp() });
-    await signOut(auth);
-    window.location.href = '../index.html';
+window.doSignOut=async()=>{
+  if(confirm('Deseja sair?')){
+    await set(ref(rtdb,`status/${myUid}`),{state:'offline',lastSeen:serverTimestamp()});
+    await signOut(auth);window.location.href='../index.html';
   }
 };
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
+// ── PWA ──
+let dip=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dip=e;if(!localStorage.getItem('install_dismissed'))document.getElementById('installBanner').classList.add('show')});
+document.getElementById('installBtn').addEventListener('click',async()=>{if(!dip)return;dip.prompt();const{outcome}=await dip.userChoice;if(outcome==='accepted'){document.getElementById('installBanner').classList.remove('show');showToast('✅ App instalado!')}dip=null});
+window.dismissInstall=()=>{document.getElementById('installBanner').classList.remove('show');localStorage.setItem('install_dismissed','1')};
 
-function escHtml(t) {
-  return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-// ===== PWA INSTALL =====
-let deferredInstallPrompt = null;
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredInstallPrompt = e;
-  if (!localStorage.getItem('install_dismissed')) {
-    document.getElementById('installBanner').classList.add('show');
-  }
-});
-
-document.getElementById('installBtn').addEventListener('click', async () => {
-  if (!deferredInstallPrompt) return;
-  deferredInstallPrompt.prompt();
-  const { outcome } = await deferredInstallPrompt.userChoice;
-  if (outcome === 'accepted') {
-    document.getElementById('installBanner').classList.remove('show');
-    showToast('✅ App instalado!');
-  }
-  deferredInstallPrompt = null;
-});
-
-window.dismissInstall = function() {
-  document.getElementById('installBanner').classList.remove('show');
-  localStorage.setItem('install_dismissed', '1');
-};
-
-window.addEventListener('appinstalled', () => {
-  document.getElementById('installBanner').classList.remove('show');
-  showToast('🦋 Messenger instalado com sucesso!');
-});
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+function escHtml(t){return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 </script>
 
 <script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/mensageiro/sw.js', { scope: '/mensageiro/' })
-      .catch(e => console.log('SW error:', e));
-  });
-}
+if('serviceWorker'in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('/mensageiro/sw.js',{scope:'/mensageiro/'}).catch(e=>console.log('SW:',e))})}
 </script>
 </body>
 </html>
