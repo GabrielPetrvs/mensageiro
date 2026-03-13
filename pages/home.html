@@ -9,263 +9,623 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Messenger">
-<meta name="theme-color" content="#1a4fa0">
+<meta name="theme-color" content="#0a3a78">
 <link rel="manifest" href="../manifest.json">
 <link rel="apple-touch-icon" href="../favicon.svg">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Tahoma&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Tahoma',Arial,sans-serif;font-size:11px;background:#1a3a6e;background-image:radial-gradient(ellipse at 20% 50%,#2a5298 0%,transparent 55%),radial-gradient(ellipse at 80% 20%,#0d47a1 0%,transparent 55%);display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:20px}
-@keyframes appear{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.msn-window{width:290px;min-height:600px;background:#fff;border:1px solid #888;box-shadow:3px 3px 10px rgba(0,0,0,.5);display:flex;flex-direction:column;animation:appear .2s ease}
-.title-bar{height:22px;background:linear-gradient(to bottom,#4a90d9 0%,#2563c0 50%,#1a4fa0 100%);display:flex;align-items:center;padding:0 5px;gap:4px;user-select:none;flex-shrink:0}
-.tb-text{color:#fff;font-size:11px;font-weight:bold;flex:1;text-shadow:1px 1px rgba(0,0,0,.4)}
-.tb-btn{width:16px;height:14px;background:linear-gradient(to bottom,#e8e8e8,#b8b8b8);border:1px solid #888;border-radius:2px;cursor:pointer;font-size:9px;font-weight:bold;display:flex;align-items:center;justify-content:center;color:#333}
+
+/* ══ FULLSCREEN LAYOUT ══ */
+html,body{width:100%;height:100%;min-height:100vh;overflow:hidden;font-family:'Tahoma',Arial,sans-serif;font-size:11px;}
+
+body{
+  display:flex;
+  background:linear-gradient(135deg,#0e2d6b 0%,#0a246e 50%,#061b58 100%);
+}
+
+/* ── WLM MAIN WINDOW (centered, fills most of screen) ── */
+.msn-app{
+  display:flex;flex-direction:column;
+  width:300px;min-width:260px;max-width:340px;
+  height:100vh;min-height:100vh;
+  background:#fff;
+  border-right:1px solid #c8d4ee;
+  box-shadow:2px 0 16px rgba(0,0,0,.35);
+  flex-shrink:0;
+  position:relative;
+}
+
+/* ── TITLE BAR ── */
+.title-bar{
+  height:22px;flex-shrink:0;
+  background:linear-gradient(to bottom,#4a90d9 0%,#2563c0 45%,#1a4fa0 100%);
+  display:flex;align-items:center;padding:0 5px;gap:3px;
+  user-select:none;
+}
+.tb-text{color:#fff;font-size:11px;font-weight:bold;flex:1;text-shadow:1px 1px rgba(0,0,0,.4);display:flex;align-items:center;gap:5px}
+.tb-btn{
+  width:17px;height:15px;
+  background:linear-gradient(to bottom,#e8e8e8,#b8b8b8);
+  border:1px solid #767676;border-radius:2px;
+  cursor:pointer;font-size:9px;font-weight:bold;
+  display:flex;align-items:center;justify-content:center;color:#000;flex-shrink:0;
+}
 .tb-btn:hover{background:linear-gradient(to bottom,#fff,#ccc)}
-.tb-btn.close:hover{background:linear-gradient(to bottom,#ff6666,#cc0000);color:#fff}
-.menu-bar{height:18px;background:#ece9d8;border-bottom:1px solid #aca899;display:flex;align-items:center;padding:0 4px;gap:2px;flex-shrink:0}
-.menu-item{font-size:11px;color:#000;cursor:pointer;padding:1px 6px;border-radius:2px;white-space:nowrap}
+.tb-btn.close:hover{background:linear-gradient(to bottom,#f66,#c00);color:#fff;border-color:#900}
+
+/* ── MENU BAR ── */
+.menu-bar{
+  height:18px;flex-shrink:0;
+  background:linear-gradient(to bottom,#f5f2e8,#ece9d8);
+  border-bottom:1px solid #aca899;
+  display:flex;align-items:center;padding:0 3px;gap:0;
+}
+.menu-item{
+  font-size:11px;color:#000;cursor:pointer;
+  padding:1px 7px;border-radius:2px;white-space:nowrap;
+  height:16px;display:flex;align-items:center;
+}
 .menu-item:hover{background:#316ac5;color:#fff}
-.msn-header{background:linear-gradient(to bottom,#e8f0ff,#ccdaff);padding:8px;border-bottom:1px solid #99aacc;flex-shrink:0}
-.my-profile{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.avatar-wrap{position:relative;width:52px;height:52px;flex-shrink:0;cursor:pointer}
-.avatar{width:52px;height:52px;border:2px solid #6688cc;background:linear-gradient(135deg,#4a90e2,#7b68ee);display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden}
-.avatar img{width:100%;height:100%;object-fit:cover}
-.avatar-edit-overlay{position:absolute;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;color:#fff;font-size:18px}
-.avatar-wrap:hover .avatar-edit-overlay{display:flex}
-.status-dot{position:absolute;bottom:1px;right:1px;width:11px;height:11px;border-radius:50%;border:2px solid #ccdaff}
-.my-info{flex:1;min-width:0}
-.my-name{font-size:12px;font-weight:bold;color:#003399;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ── MY PROFILE HEADER ── */
+/* WLM 2009: deep blue gradient header, large avatar, white name */
+.my-header{
+  flex-shrink:0;
+  background:linear-gradient(160deg,#1a5cb8 0%,#2e7dd4 55%,#5ba3e8 100%);
+  padding:10px 10px 8px;
+  position:relative;overflow:hidden;
+}
+.my-header::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(255,255,255,.12) 0%,transparent 50%);
+  pointer-events:none;
+}
+.my-profile-row{display:flex;align-items:flex-start;gap:9px;position:relative;z-index:1}
+
+/* Avatar: square rounded, white border */
+.my-avatar-wrap{position:relative;flex-shrink:0;cursor:pointer}
+.my-avatar{
+  width:52px;height:52px;border-radius:4px;
+  border:2px solid rgba(255,255,255,.85);
+  background:linear-gradient(135deg,#88aaee,#aabbff);
+  display:flex;align-items:center;justify-content:center;font-size:28px;
+  overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.25);
+}
+.my-avatar img{width:100%;height:100%;object-fit:cover}
+.my-avatar-edit{
+  position:absolute;inset:0;background:rgba(0,0,0,.42);
+  border-radius:4px;display:none;align-items:center;justify-content:center;
+  color:#fff;font-size:16px;cursor:pointer;
+}
+.my-avatar-wrap:hover .my-avatar-edit{display:flex}
+.my-status-dot{
+  position:absolute;bottom:-3px;right:-3px;
+  width:13px;height:13px;border-radius:50%;
+  border:2px solid #2e7dd4;
+}
+
+.my-info{flex:1;min-width:0;position:relative;z-index:1}
+.my-name{
+  font-size:13px;font-weight:bold;color:#fff;
+  text-shadow:0 1px 3px rgba(0,0,0,.35);
+  cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
 .my-name:hover{text-decoration:underline}
-.my-msg{font-size:10px;color:#555;font-style:italic;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.my-song{font-size:9px;color:#7755aa;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
-.status-sel{font-size:10px;border:1px solid #99aacc;background:#fff;padding:1px 2px;color:#333;font-family:inherit;cursor:pointer;margin-top:3px;width:100%}
-.mobile-actions{display:none;gap:6px;align-items:center}
-.mob-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;color:#fff;-webkit-tap-highlight-color:transparent}
-.mob-btn:active{background:rgba(255,255,255,.3)}
-.nav-tabs{display:flex;background:#ece9d8;border-bottom:1px solid #aca899;flex-shrink:0}
-.nav-tab{flex:1;padding:4px 0;text-align:center;font-size:10px;cursor:pointer;color:#555;border-bottom:2px solid transparent;position:relative}
-.nav-tab:hover{background:#ddd}
-.nav-tab.active{background:#fff;color:#003399;font-weight:bold;border-bottom:2px solid #4a90d9}
-.badge{position:absolute;top:1px;right:6px;background:#cc0000;color:#fff;font-size:8px;font-weight:bold;border-radius:8px;padding:0 3px;min-width:12px;text-align:center}
-.search-bar{background:#ece9d8;border-bottom:1px solid #aca899;padding:3px 6px;display:flex;align-items:center;gap:4px;flex-shrink:0}
-.search-input{flex:1;border:1px solid #aaa;padding:1px 4px;font-size:10px;font-family:inherit;background:#fff;outline:none}
-.search-input:focus{border-color:#4a90d9}
-.panel{display:none;flex:1;flex-direction:column;overflow:hidden}
+.my-msg{
+  font-size:10px;color:rgba(255,255,255,.78);font-style:italic;
+  cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  margin-top:2px;
+}
+.my-msg:hover{color:#fff}
+.my-song{
+  font-size:9px;color:rgba(220,200,255,.9);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px;
+}
+
+/* Status selector WLM style */
+.status-sel{
+  display:block;margin-top:5px;width:100%;
+  font-size:10px;font-family:inherit;
+  background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
+  color:#fff;padding:2px 6px;border-radius:2px;cursor:pointer;
+}
+.status-sel option{color:#000;background:#fff}
+
+/* Header action buttons (mobile) */
+.header-actions{display:none;gap:5px;align-items:center;position:relative;z-index:1}
+.hdr-btn{
+  width:30px;height:30px;border-radius:50%;
+  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;cursor:pointer;color:#fff;
+  -webkit-tap-highlight-color:transparent;
+}
+.hdr-btn:active{background:rgba(255,255,255,.28)}
+
+/* ── NAV TABS ── */
+.nav-tabs{
+  display:flex;flex-shrink:0;
+  background:linear-gradient(to bottom,#f5f2e8,#ece9d8);
+  border-bottom:1px solid #aca899;
+}
+.nav-tab{
+  flex:1;text-align:center;padding:4px 0;
+  font-size:10px;cursor:pointer;color:#555;
+  border-bottom:2px solid transparent;
+  position:relative;white-space:nowrap;
+}
+.nav-tab:hover{background:#e0ddd4}
+.nav-tab.active{
+  background:#fff;color:#003399;font-weight:bold;
+  border-bottom:2px solid #316ac5;
+}
+.tab-badge{
+  position:absolute;top:1px;right:4px;
+  background:#cc0000;color:#fff;font-size:7px;font-weight:bold;
+  border-radius:7px;padding:0 3px;min-width:11px;text-align:center;
+}
+
+/* ── SEARCH BAR ── */
+.search-bar{
+  flex-shrink:0;
+  background:linear-gradient(to bottom,#f5f2e8,#ece9d8);
+  border-bottom:1px solid #c8c4b4;
+  padding:3px 6px;display:flex;align-items:center;gap:4px;
+}
+.search-icon{font-size:11px;color:#888}
+.search-input{
+  flex:1;border:1px solid #bbb;background:#fff;
+  padding:2px 5px;font-size:10px;font-family:inherit;outline:none;
+}
+.search-input:focus{border-color:#316ac5}
+
+/* ── PANELS ── */
+.panel{display:none;flex:1;flex-direction:column;overflow:hidden;min-height:0}
 .panel.active{display:flex}
-.list-area{flex:1;overflow-y:auto;background:#fff}
-.list-area::-webkit-scrollbar{width:12px}
-.list-area::-webkit-scrollbar-track{background:#f0f0f0}
-.list-area::-webkit-scrollbar-thumb{background:linear-gradient(to bottom,#c8c8c8,#a0a0a0);border:1px solid #888}
-.group-header{background:linear-gradient(to bottom,#e8e4d8,#d8d4c8);border-top:1px solid #c8c4b8;border-bottom:1px solid #b8b4a8;padding:2px 6px;cursor:pointer;display:flex;align-items:center;gap:4px;user-select:none}
-.group-arrow{font-size:8px;color:#666;transition:transform .15s}
+.list-scroll{flex:1;overflow-y:auto;background:#fff}
+/* WLM style scrollbar */
+.list-scroll::-webkit-scrollbar{width:14px}
+.list-scroll::-webkit-scrollbar-track{background:#f0f0f0;border-left:1px solid #ddd}
+.list-scroll::-webkit-scrollbar-thumb{
+  background:linear-gradient(to bottom,#d0d0d0,#b0b0b0);
+  border:1px solid #999;border-radius:1px;
+}
+.list-scroll::-webkit-scrollbar-thumb:hover{background:linear-gradient(to bottom,#bbb,#999)}
+
+/* ── GROUP HEADER ── */
+.group-hdr{
+  background:linear-gradient(to bottom,#ece9d8,#dedad0);
+  border-top:1px solid #c8c4b4;border-bottom:1px solid #b4b0a4;
+  padding:2px 6px;cursor:pointer;
+  display:flex;align-items:center;gap:5px;
+  user-select:none;
+}
+.group-hdr:hover{background:linear-gradient(to bottom,#f0ede4,#e4e0d4)}
+.group-arrow{font-size:8px;color:#555;transition:transform .15s;flex-shrink:0}
 .group-arrow.col{transform:rotate(-90deg)}
-.group-name{font-size:11px;color:#333;font-weight:bold}
-.group-count{font-size:10px;color:#888;margin-left:auto}
-.group-list.hidden{display:none}
-.contact-item{display:flex;align-items:center;gap:6px;padding:3px 8px 3px 16px;cursor:pointer;border-bottom:1px solid #f4f4f4;transition:background .1s;position:relative}
-.contact-item:hover{background:#dce8ff}
+.group-label{font-size:11px;color:#333;font-weight:bold;flex:1}
+.group-count{font-size:10px;color:#888}
+.group-body.hidden{display:none}
+
+/* ── CONTACT ITEM ── */
+.contact-item{
+  display:flex;align-items:center;gap:7px;
+  padding:4px 8px 4px 14px;
+  cursor:pointer;border-bottom:1px solid #f2f2f2;
+  position:relative;transition:background .08s;
+  min-height:42px;
+}
+.contact-item:hover{background:#e8f0fc}
 .contact-item:hover .c-actions{display:flex}
-.c-actions{display:none;position:absolute;right:4px;top:50%;transform:translateY(-50%);gap:3px;z-index:1}
-.c-act-btn{width:18px;height:18px;background:linear-gradient(to bottom,#e8e4d8,#c8c4b4);border:1px solid #999;border-radius:2px;cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center}
-.c-act-btn:hover{background:#316ac5;color:#fff;border-color:#1a4fa0}
-.contact-avatar{width:32px;height:32px;border:1px solid #aabbdd;background:linear-gradient(135deg,#88aaee,#aabbff);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;position:relative;overflow:hidden}
-.contact-avatar img{width:100%;height:100%;object-fit:cover}
-.c-dot{position:absolute;bottom:0;right:0;width:8px;height:8px;border-radius:50%;border:1px solid #fff}
-.contact-info{flex:1;min-width:0}
+.c-actions{
+  display:none;position:absolute;right:5px;top:50%;
+  transform:translateY(-50%);gap:2px;z-index:2;
+}
+.c-act{
+  width:18px;height:18px;
+  background:linear-gradient(to bottom,#f0ede4,#d8d4c8);
+  border:1px solid #999;border-radius:2px;
+  cursor:pointer;font-size:10px;
+  display:flex;align-items:center;justify-content:center;
+}
+.c-act:hover{background:#316ac5;color:#fff;border-color:#1a4fa0}
+
+/* Avatar WLM: square rounded */
+.c-avatar{
+  width:33px;height:33px;border-radius:3px;
+  border:1px solid #c0ccee;
+  background:linear-gradient(135deg,#88aaee,#aabbff);
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;flex-shrink:0;overflow:hidden;
+  position:relative;
+}
+.c-avatar img{width:100%;height:100%;object-fit:cover}
+.c-dot{
+  position:absolute;bottom:-2px;right:-2px;
+  width:9px;height:9px;border-radius:50%;
+  border:1px solid #fff;
+}
+.s-online{background:#00c800}
+.s-away{background:#ffaa00}
+.s-busy{background:#cc0000}
+.s-offline{background:#aaa}
+
+.c-info{flex:1;min-width:0}
 .c-name{font-size:11px;font-weight:bold;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.c-msg{font-size:10px;color:#888;font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.c-song{font-size:9px;color:#7755aa;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.s-online{background:#00c800}.s-away{background:#ffaa00}.s-busy{background:#cc0000}.s-offline{background:#aaa}
-.blocked-item{opacity:.45}
-.blocked-item .c-name::after{content:' (bloqueado)';font-size:9px;color:#cc0000;font-weight:normal}
-.unread-item{background:#f0f4ff}
-.unread-item:hover{background:#dce8ff}
-.c-name-row{display:flex;align-items:center;justify-content:space-between}
-.c-name-bold{font-weight:bold}
-.lm-row{display:flex;align-items:center;gap:2px;font-size:10px;color:#888;overflow:hidden;margin-top:1px}
-.lm-me{color:#888;flex-shrink:0}
-.lm-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
-.lm-time{flex-shrink:0;font-size:9px;color:#bbb;margin-left:4px}
-.lm-read{flex-shrink:0;color:#4a90d9;font-size:9px;margin-right:2px}
-.lm-unread-dot{width:7px;height:7px;border-radius:50%;background:#4a90d9;flex-shrink:0;margin-right:2px}
-.add-bar{background:#ece9d8;border-top:1px solid #aca899;padding:4px 6px;display:flex;gap:4px;flex-shrink:0}
-.add-input{flex:1;border:1px solid #aaa;padding:2px 4px;font-size:10px;font-family:inherit;background:#fff;outline:none}
-.add-input:focus{border-color:#4a90d9}
-.add-btn{font-size:10px;font-family:inherit;background:linear-gradient(to bottom,#4a90d9,#1a4fa0);color:#fff;border:1px solid #1a4fa0;padding:0 8px;cursor:pointer;border-radius:2px}
-.request-item{display:flex;align-items:center;gap:8px;padding:6px 10px;border-bottom:1px solid #f0f0f0}
-.req-avatar{width:32px;height:32px;border:1px solid #aabbdd;background:linear-gradient(135deg,#88aaee,#aabbff);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;overflow:hidden}
+.c-sub{font-size:10px;color:#888;font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
+.c-song-line{font-size:9px;color:#7755aa;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-unread{font-weight:bold}
+.lm-row{display:flex;align-items:center;gap:2px;font-size:10px;overflow:hidden;margin-top:1px}
+.lm-pfx{color:#888;flex-shrink:0}
+.lm-txt{color:#666;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.lm-time{color:#bbb;font-size:9px;flex-shrink:0;margin-left:3px}
+.lm-read{color:#4a90d9;font-size:9px;flex-shrink:0}
+.lm-dot{width:7px;height:7px;border-radius:50%;background:#316ac5;flex-shrink:0}
+.blocked-item{opacity:.4}
+.blocked-item .c-name::after{content:' (bloqueado)';font-size:9px;color:#c00;font-weight:normal}
+
+/* ── ADD BAR ── */
+.add-bar{
+  flex-shrink:0;
+  background:linear-gradient(to bottom,#f5f2e8,#ece9d8);
+  border-top:1px solid #aca899;
+  padding:4px 6px;display:flex;gap:5px;
+}
+.add-input{
+  flex:1;border:1px solid #bbb;background:#fff;
+  padding:3px 5px;font-size:10px;font-family:inherit;outline:none;
+}
+.add-input:focus{border-color:#316ac5}
+.add-btn{
+  font-size:10px;font-family:inherit;
+  background:linear-gradient(to bottom,#4a90d9,#316ac5);
+  color:#fff;border:1px solid #1a4fa0;
+  padding:0 10px;cursor:pointer;border-radius:2px;
+}
+.add-btn:hover{background:linear-gradient(to bottom,#5aa0e9,#3d7ad5)}
+
+/* ── REQUEST ITEM ── */
+.req-item{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 10px;border-bottom:1px solid #f0f0f0;
+  background:#fff;
+}
+.req-avatar{
+  width:33px;height:33px;border-radius:3px;
+  border:1px solid #c0ccee;
+  background:linear-gradient(135deg,#88aaee,#aabbff);
+  display:flex;align-items:center;justify-content:center;font-size:17px;
+  flex-shrink:0;overflow:hidden;
+}
 .req-avatar img{width:100%;height:100%;object-fit:cover}
 .req-info{flex:1;min-width:0}
 .req-name{font-size:11px;font-weight:bold;color:#003399}
-.req-sub{font-size:10px;color:#888}
-.req-btns{display:flex;gap:4px}
-.req-btn{font-size:10px;font-family:inherit;border:1px solid #999;padding:2px 6px;cursor:pointer;border-radius:2px}
-.req-btn.accept{background:linear-gradient(to bottom,#4a90d9,#1a4fa0);color:#fff;border-color:#1a4fa0}
-.req-btn.decline{background:linear-gradient(to bottom,#e8e4d8,#c8c4b4);color:#333}
-.empty-msg{padding:20px;text-align:center;color:#999;font-size:11px;line-height:1.8}
-.msn-footer{height:22px;background:linear-gradient(to bottom,#ece9d8,#d4d0c8);border-top:1px solid #aca899;display:flex;align-items:center;padding:0 6px;gap:6px;flex-shrink:0}
-.f-btn{font-size:10px;color:#333;cursor:pointer;padding:1px 4px;border-radius:2px;border:1px solid transparent}
+.req-sub{font-size:10px;color:#888;margin-top:1px}
+.req-btns{display:flex;gap:4px;flex-shrink:0}
+.req-btn{
+  font-size:10px;font-family:inherit;border:1px solid #999;
+  padding:2px 7px;cursor:pointer;border-radius:2px;
+}
+.req-btn.ok{background:linear-gradient(to bottom,#4a90d9,#316ac5);color:#fff;border-color:#1a4fa0}
+.req-btn.no{background:linear-gradient(to bottom,#f0ede4,#d8d4c8);color:#333}
+
+.empty-note{padding:20px;text-align:center;color:#aaa;font-size:11px;line-height:1.8}
+
+/* ── FOOTER BAR ── */
+.msn-footer{
+  height:22px;flex-shrink:0;
+  background:linear-gradient(to bottom,#ece9d8,#d4d0c4);
+  border-top:1px solid #aca899;
+  display:flex;align-items:center;padding:0 6px;gap:5px;
+}
+.f-btn{
+  font-size:10px;color:#333;cursor:pointer;
+  padding:1px 4px;border-radius:2px;border:1px solid transparent;
+  white-space:nowrap;
+}
 .f-btn:hover{border-color:#aaa;background:#fff}
-.notif-popup{position:fixed;bottom:20px;right:20px;z-index:500;background:linear-gradient(to bottom,#e8f0ff,#ccdaff);border:1px solid #6688cc;padding:10px 14px 10px 10px;box-shadow:2px 2px 8px rgba(0,0,0,.3);font-size:11px;display:none;max-width:240px;cursor:pointer}
+.f-user{margin-left:auto;font-size:10px;color:#777;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ── RIGHT AREA (desktop décor) ── */
+.right-bg{
+  flex:1;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:20px;padding:40px;
+  position:relative;overflow:hidden;
+}
+.right-bg::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 30% 50%,rgba(74,144,217,.14) 0%,transparent 60%),
+    radial-gradient(ellipse at 75% 20%,rgba(40,100,200,.1) 0%,transparent 55%);
+  pointer-events:none;
+}
+.right-butterfly{
+  width:100px;height:100px;
+  display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:6px;
+  filter:drop-shadow(0 4px 20px rgba(0,0,0,.3));
+  opacity:.7;position:relative;z-index:1;
+}
+.wing{border-radius:60% 5% 60% 5%;}
+.wing-tr{background:#e8441a;transform:rotate(90deg);border-radius:5% 60% 5% 60%;}
+.wing-tl{background:#f5a623;}
+.wing-bl{background:#4a90d9;transform:rotate(180deg);border-radius:5% 60% 5% 60%;}
+.wing-br{background:#7dc142;transform:rotate(270deg);}
+.right-brand{color:rgba(255,255,255,.55);font-size:26px;font-weight:bold;position:relative;z-index:1;letter-spacing:-.5px}
+.right-sub{color:rgba(255,255,255,.32);font-size:11px;position:relative;z-index:1;text-align:center;line-height:1.6}
+
+/* ══ NOTIF POPUP ══ */
+.notif-popup{
+  position:fixed;bottom:20px;right:20px;z-index:600;
+  background:linear-gradient(to bottom,#e8f0ff,#ccdaff);
+  border:1px solid #6688cc;padding:10px 12px 10px 10px;
+  box-shadow:2px 2px 8px rgba(0,0,0,.3);
+  display:none;max-width:240px;cursor:pointer;
+}
 .notif-popup.show{display:flex;gap:8px;align-items:flex-start;animation:slideUp .2s ease}
-@keyframes slideUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.notif-avatar{width:32px;height:32px;border:1px solid #aabbdd;background:linear-gradient(135deg,#88aaee,#aabbff);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;overflow:hidden}
-.notif-avatar img{width:100%;height:100%;object-fit:cover}
-.notif-body{flex:1;min-width:0}
-.notif-name{font-weight:bold;color:#003399;font-size:11px}
-.notif-msg{color:#333;font-size:10px;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.notif-close{font-size:11px;color:#888;cursor:pointer;padding:0 2px;flex-shrink:0}
-.notif-close:hover{color:#cc0000}
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:400;align-items:center;justify-content:center}
+@keyframes slideUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.np-avatar{
+  width:30px;height:30px;border-radius:3px;border:1px solid #c0ccee;
+  background:linear-gradient(135deg,#88aaee,#aabbff);
+  display:flex;align-items:center;justify-content:center;font-size:15px;
+  flex-shrink:0;overflow:hidden;
+}
+.np-avatar img{width:100%;height:100%;object-fit:cover}
+.np-body{flex:1;min-width:0}
+.np-name{font-weight:bold;color:#003399;font-size:11px}
+.np-msg{color:#333;font-size:10px;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.np-close{font-size:12px;color:#999;cursor:pointer;padding:0 2px;flex-shrink:0}
+.np-close:hover{color:#c00}
+
+/* ══ TOAST ══ */
+.toast{
+  position:fixed;top:24px;left:50%;transform:translateX(-50%);
+  background:#333;color:#fff;padding:6px 16px;font-size:11px;
+  border-radius:2px;z-index:700;display:none;white-space:nowrap;
+}
+.toast.show{display:block;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ══ LOADING ══ */
+.loading-screen{
+  position:fixed;inset:0;
+  background:rgba(10,36,110,.92);
+  display:flex;align-items:center;justify-content:center;
+  z-index:900;flex-direction:column;gap:14px;
+}
+.loading-screen.hidden{display:none}
+.loading-text{color:#fff;font-size:13px}
+.loading-bar{width:160px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;overflow:hidden}
+.loading-fill{height:100%;background:#4a90d9;border-radius:2px;animation:fill 1.4s ease forwards}
+@keyframes fill{from{width:0%}to{width:100%}}
+
+/* ══ INSTALL BANNER ══ */
+.install-banner{
+  display:none;position:fixed;bottom:0;left:0;right:0;
+  background:linear-gradient(to bottom,#e8f0ff,#ccdaff);
+  border-top:1px solid #6688cc;padding:8px 14px;
+  box-shadow:0 -2px 8px rgba(0,0,0,.2);z-index:400;
+  align-items:center;gap:10px;
+  padding-bottom:max(8px,env(safe-area-inset-bottom));
+}
+.install-banner.show{display:flex;animation:slideUp .3s ease}
+.ib-text{flex:1;font-size:11px;color:#003399;line-height:1.4}
+.ib-text b{display:block;font-size:12px}
+.ib-install{
+  font-family:inherit;font-size:10px;
+  background:linear-gradient(to bottom,#4a90d9,#316ac5);
+  color:#fff;border:1px solid #1a4fa0;
+  padding:4px 12px;cursor:pointer;border-radius:2px;
+}
+.ib-dismiss{font-size:15px;color:#999;cursor:pointer;padding:0 4px}
+.ib-dismiss:hover{color:#c00}
+
+/* ══ MODALS ══ */
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.42);z-index:500;
+  align-items:center;justify-content:center;
+}
 .modal-overlay.show{display:flex}
-.modal{background:#ece9d8;border:1px solid #888;box-shadow:3px 3px 10px rgba(0,0,0,.4);width:300px;animation:appear .15s ease;max-height:90vh;overflow-y:auto}
-.modal-title{height:22px;background:linear-gradient(to bottom,#4a90d9,#1a4fa0);display:flex;align-items:center;padding:0 6px;gap:4px;position:sticky;top:0;z-index:1}
-.modal-title span{color:#fff;font-size:11px;font-weight:bold;flex:1}
+.modal{
+  background:#ece9d8;border:1px solid #888;
+  box-shadow:4px 4px 14px rgba(0,0,0,.45);
+  width:310px;max-height:92vh;overflow-y:auto;
+  animation:appear .15s ease;
+}
+@keyframes appear{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.modal-bar{
+  height:22px;background:linear-gradient(to bottom,#4a90d9,#1a4fa0);
+  display:flex;align-items:center;padding:0 6px;gap:4px;
+  position:sticky;top:0;z-index:2;
+}
+.modal-bar span{color:#fff;font-size:11px;font-weight:bold;flex:1}
 .modal-body{padding:14px;display:flex;flex-direction:column;gap:10px}
 .m-label{font-size:11px;color:#333;margin-bottom:2px}
-.m-input{width:100%;border:1px solid #aaa;padding:3px 5px;font-size:11px;font-family:inherit;background:#fff;outline:none}
-.m-input:focus{border-color:#4a90d9}
+.m-input{
+  width:100%;border:1px solid #bbb;padding:4px 6px;
+  font-size:11px;font-family:inherit;background:#fff;outline:none;
+}
+.m-input:focus{border-color:#316ac5}
 .modal-btns{display:flex;justify-content:flex-end;gap:6px;flex-wrap:wrap}
-.m-btn{font-size:11px;font-family:inherit;background:linear-gradient(to bottom,#e8e4d8,#c8c4b4);border:1px solid #999;padding:2px 14px;cursor:pointer;border-radius:2px}
-.m-btn:hover{background:linear-gradient(to bottom,#fff,#ddd)}
-.m-btn.primary{background:linear-gradient(to bottom,#4a90d9,#1a4fa0);color:#fff;border-color:#1a4fa0}
-.m-btn.primary:hover{background:linear-gradient(to bottom,#5aa0e9,#2a5fb0)}
-.m-btn.danger{background:linear-gradient(to bottom,#e86666,#cc0000);color:#fff;border-color:#cc0000}
-.emoji-picker{display:flex;flex-wrap:wrap;gap:5px}
+.m-btn{
+  font-size:11px;font-family:inherit;
+  background:linear-gradient(to bottom,#f0ede4,#d8d4c8);
+  border:1px solid #999;padding:3px 14px;cursor:pointer;border-radius:2px;
+}
+.m-btn:hover{background:linear-gradient(to bottom,#fff,#e8e4d8)}
+.m-btn.primary{background:linear-gradient(to bottom,#4a90d9,#316ac5);color:#fff;border-color:#1a4fa0}
+.m-btn.primary:hover{background:linear-gradient(to bottom,#5aa0e9,#3d7ad5)}
+.m-btn.danger{background:linear-gradient(to bottom,#e86666,#c00);color:#fff;border-color:#c00}
+
+/* emoji picker */
+.emoji-picker{display:flex;flex-wrap:wrap;gap:4px}
 .emoji-opt{font-size:20px;cursor:pointer;padding:2px 4px;border:2px solid transparent;border-radius:3px}
-.emoji-opt:hover{background:#ddd}
-.emoji-opt.selected{border-color:#4a90d9;background:#e8f0ff}
+.emoji-opt:hover{background:#dce8ff}
+.emoji-opt.selected{border-color:#316ac5;background:#e8f0ff}
+
+/* photo area */
 .photo-area{display:flex;align-items:center;gap:10px}
-.photo-preview{width:52px;height:52px;border:2px solid #6688cc;background:linear-gradient(135deg,#4a90e2,#7b68ee);display:flex;align-items:center;justify-content:center;font-size:26px;overflow:hidden;flex-shrink:0}
+.photo-preview{
+  width:52px;height:52px;border:2px solid #6688cc;border-radius:3px;
+  background:linear-gradient(135deg,#4a90e2,#7b68ee);
+  display:flex;align-items:center;justify-content:center;font-size:26px;
+  overflow:hidden;flex-shrink:0;
+}
 .photo-preview img{width:100%;height:100%;object-fit:cover}
 .photo-btns{display:flex;flex-direction:column;gap:4px}
-.photo-btn{font-size:10px;font-family:inherit;background:linear-gradient(to bottom,#e8e4d8,#c8c4b4);border:1px solid #999;padding:2px 8px;cursor:pointer;border-radius:2px}
-#photoFileInput{display:none}
+.photo-btn{
+  font-size:10px;font-family:inherit;
+  background:linear-gradient(to bottom,#f0ede4,#d8d4c8);
+  border:1px solid #999;padding:2px 8px;cursor:pointer;border-radius:2px;
+}
+
+/* color picker */
 .color-row{display:flex;flex-wrap:wrap;gap:5px}
-.color-opt{width:20px;height:20px;border-radius:50%;border:3px solid transparent;cursor:pointer}
+.color-opt{
+  width:20px;height:20px;border-radius:50%;
+  border:3px solid transparent;cursor:pointer;
+}
 .color-opt:hover{border-color:#888}
 .color-opt.selected{border-color:#000;box-shadow:0 0 0 1px #fff inset}
-.profile-view{text-align:center;padding:10px 0}
-.pv-avatar{width:72px;height:72px;border:3px solid #6688cc;background:linear-gradient(135deg,#4a90e2,#7b68ee);display:flex;align-items:center;justify-content:center;font-size:38px;margin:0 auto 8px;overflow:hidden}
+
+/* profile view */
+.pv-wrap{text-align:center;padding:8px 0}
+.pv-avatar{
+  width:72px;height:72px;border-radius:6px;
+  border:3px solid #6688cc;
+  background:linear-gradient(135deg,#4a90e2,#7b68ee);
+  display:flex;align-items:center;justify-content:center;font-size:38px;
+  margin:0 auto 8px;overflow:hidden;
+}
 .pv-avatar img{width:100%;height:100%;object-fit:cover}
 .pv-name{font-size:14px;font-weight:bold;color:#003399}
 .pv-username{font-size:10px;color:#888;margin-top:2px}
 .pv-msg{font-size:11px;color:#555;font-style:italic;margin-top:6px}
 .pv-song{font-size:10px;color:#7755aa;margin-top:4px}
-.pv-status{margin-top:6px;font-size:10px;display:flex;align-items:center;justify-content:center;gap:4px}
-.notif-settings{display:flex;flex-direction:column;gap:4px}
-.notif-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid #ddd}
-.notif-row:last-child{border-bottom:none}
-.notif-row-label{font-size:11px;color:#333}
-.notif-row-desc{font-size:10px;color:#888;margin-top:1px}
-.toggle-btn{width:36px;height:18px;border-radius:9px;border:1px solid #aaa;background:#ccc;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
-.toggle-btn.on{background:#4a90d9;border-color:#2a5fb0}
-.toggle-btn::after{content:'';position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 2px rgba(0,0,0,.3)}
-.toggle-btn.on::after{left:20px}
-.history-list{display:flex;flex-direction:column;max-height:300px;overflow-y:auto}
-.history-item{padding:3px 6px;font-size:11px;display:flex;gap:6px;border-bottom:1px solid #f0f0f0;align-items:baseline}
-.h-name{font-weight:bold;min-width:60px;flex-shrink:0;font-size:10px}
-.h-text{color:#444;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}
-.h-time{color:#aaa;font-size:9px;flex-shrink:0}
-.h-mine .h-name{color:#cc0000}
-.h-theirs .h-name{color:#0033cc}
-.h-system{color:#aaa;font-style:italic;justify-content:center;font-size:10px}
-.loading-screen{position:fixed;inset:0;background:rgba(26,58,110,.9);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:12px}
-.loading-screen.hidden{display:none}
-.loading-text{color:#fff;font-size:13px}
-.loading-bar{width:160px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;overflow:hidden}
-.loading-fill{height:100%;background:#4a90d9;border-radius:2px;animation:fill 1.5s ease forwards}
-@keyframes fill{from{width:0%}to{width:100%}}
-.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:6px 16px;font-size:11px;border-radius:2px;z-index:600;display:none;white-space:nowrap}
-.toast.show{display:block;animation:fadeIn .2s ease}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.install-banner{display:none;position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:290px;background:linear-gradient(to bottom,#e8f0ff,#ccdaff);border:1px solid #6688cc;border-bottom:none;padding:8px 12px;box-shadow:0 -2px 8px rgba(0,0,0,.2);z-index:300;align-items:center;gap:10px}
-.install-banner.show{display:flex;animation:slideUp .3s ease}
-.install-banner-text{flex:1;font-size:11px;color:#003399;line-height:1.4}
-.install-banner-text b{display:block;font-size:12px}
-.install-btn{font-family:inherit;font-size:10px;background:linear-gradient(to bottom,#4a90d9,#1a4fa0);color:#fff;border:1px solid #1a4fa0;padding:4px 10px;cursor:pointer;border-radius:2px;white-space:nowrap}
-.install-dismiss{font-size:14px;color:#888;cursor:pointer;padding:0 4px}
+.pv-status{margin-top:6px;font-size:10px;color:#555;display:flex;align-items:center;justify-content:center;gap:4px}
 
-/* ══ MOBILE ══ */
+/* notif settings */
+.ns-rows{display:flex;flex-direction:column}
+.ns-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid #ddd}
+.ns-row:last-child{border-bottom:none}
+.ns-label{font-size:11px;color:#333}
+.ns-desc{font-size:10px;color:#999;margin-top:1px}
+.toggle{width:36px;height:18px;border-radius:9px;border:1px solid #bbb;background:#ccc;cursor:pointer;position:relative;transition:background .18s;flex-shrink:0}
+.toggle.on{background:#4a90d9;border-color:#2a5fb0}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:#fff;transition:left .18s;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.toggle.on::after{left:20px}
+
+/* history */
+.hist-list{display:flex;flex-direction:column;max-height:290px;overflow-y:auto}
+.hist-item{padding:3px 6px;font-size:11px;display:flex;gap:6px;border-bottom:1px solid #f0f0f0;align-items:baseline}
+.h-name{font-weight:bold;min-width:55px;flex-shrink:0;font-size:10px}
+.h-txt{color:#444;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.h-time{color:#bbb;font-size:9px;flex-shrink:0}
+.h-mine .h-name{color:#c00}
+.h-theirs .h-name{color:#00c}
+.h-sys{color:#aaa;font-style:italic;justify-content:center;font-size:10px}
+
+/* ══════════════════
+   MOBILE
+══════════════════ */
 @media(max-width:768px){
-  body{padding:0!important;align-items:stretch!important;min-height:100dvh!important}
-  .msn-window{width:100%!important;min-height:100dvh!important;max-width:100%!important;border:none!important;box-shadow:none!important}
+  body{overflow:auto;min-height:100dvh}
+  .msn-app{
+    width:100%!important;max-width:100%!important;min-width:0!important;
+    height:100dvh!important;min-height:100dvh!important;
+    border-right:none!important;box-shadow:none!important;
+  }
+  .right-bg{display:none}
   .title-bar,.menu-bar{display:none}
-  .msn-header{background:linear-gradient(to bottom,#2563c0,#1a4fa0);padding:10px 12px 8px;border-bottom:none;padding-top:max(10px,env(safe-area-inset-top))}
-  .my-profile{margin-bottom:0;gap:10px}
-  .avatar-wrap{width:42px;height:42px}
-  .avatar{width:42px;height:42px;font-size:22px;border-color:rgba(255,255,255,.4)}
-  .status-dot{border-color:#1a4fa0}
-  .my-name{font-size:15px;color:#fff!important;font-weight:bold}
-  .my-msg{font-size:11px;color:rgba(255,255,255,.75)}
-  .my-song{color:rgba(200,180,255,.9)}
-  .status-sel{font-size:11px;margin-top:2px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:12px;padding:2px 8px;width:auto}
-  .status-sel option{color:#000;background:#fff}
-  .mobile-actions{display:flex!important}
+  .my-header{
+    padding:max(10px,env(safe-area-inset-top)) 12px 10px;
+    background:linear-gradient(135deg,#1a5cb8 0%,#2e7dd4 50%,#5ba3e8 100%);
+  }
+  .my-avatar{width:44px;height:44px;font-size:22px}
+  .my-name{font-size:15px}
+  .my-msg{font-size:11px}
+  .my-status-dot{border-color:#2e7dd4}
+  .status-sel{font-size:11px;border-radius:12px;padding:2px 10px;width:auto}
+  .header-actions{display:flex!important}
   .nav-tabs{background:#1a4fa0;border-bottom:none}
   .nav-tab{color:rgba(255,255,255,.65);font-size:12px;padding:10px 0;border-bottom:3px solid transparent}
   .nav-tab.active{background:transparent;color:#fff;border-bottom:3px solid #fff;font-weight:bold}
   .nav-tab:hover{background:rgba(255,255,255,.1)}
-  .badge{top:4px;right:10px}
+  .tab-badge{top:4px;right:8px}
   .search-bar{background:#f0f4ff;border-bottom:1px solid #dde4f4;padding:6px 10px}
-  .search-input{border-radius:18px;border:1px solid #c8d4ee;padding:5px 12px;font-size:13px;background:#fff}
-  .list-area{background:#f5f7ff}
-  .list-area::-webkit-scrollbar{display:none}
-  .group-header{background:#e8ecf8;border-top:none;border-bottom:1px solid #dde4f4;padding:4px 14px}
-  .group-name{font-size:12px;color:#1a4fa0}
-  .group-count,.group-arrow{color:#1a4fa0}
-  .contact-item{padding:10px 14px;gap:12px;border-bottom:1px solid #eaeef8;background:#fff;min-height:64px}
+  .search-input{border-radius:18px;border:1px solid #c8d4ee;padding:5px 12px;font-size:13px}
+  .list-scroll{background:#f5f7ff}
+  .list-scroll::-webkit-scrollbar{display:none}
+  .group-hdr{background:#e8ecf8;border:none;border-bottom:1px solid #dde4f4;padding:4px 14px}
+  .group-label{font-size:12px;color:#1a4fa0}
+  .group-count,.group-arrow{color:#1a4fa0;opacity:.8}
+  .contact-item{
+    padding:10px 14px;gap:12px;border-bottom:1px solid #eaeef8;
+    background:#fff;min-height:66px;
+  }
   .contact-item:active{background:#e8f0ff}
   .contact-item:hover .c-actions{display:none}
-  .contact-avatar{width:46px;height:46px;border-radius:50%;font-size:22px;border:2px solid #c8d4ee;flex-shrink:0}
-  .c-dot{width:12px;height:12px;border:2px solid #fff}
-  .c-name{font-size:14px;color:#111}
-  .c-msg{font-size:12px}
-  .lm-row{font-size:12px;margin-top:2px}
+  .c-avatar{width:46px;height:46px;border-radius:50%;font-size:22px;border:2px solid #c8d4ee}
+  .c-dot{width:12px;height:12px;border:2px solid #fff;bottom:0;right:0}
+  .c-name{font-size:14px}
+  .c-sub{font-size:12px}
+  .lm-row{font-size:12px;margin-top:3px}
   .lm-time{font-size:11px}
-  .lm-unread-dot{width:9px;height:9px}
-  .request-item{padding:12px 14px;gap:12px;background:#fff;border-bottom:1px solid #eaeef8}
+  .lm-dot{width:9px;height:9px}
+  .req-item{padding:12px 14px;gap:12px;background:#fff;border-bottom:1px solid #eaeef8}
   .req-avatar{width:46px;height:46px;border-radius:50%;font-size:22px}
   .req-name{font-size:14px}
   .req-sub{font-size:12px;margin-top:2px}
-  .req-btn{padding:5px 12px;font-size:12px;border-radius:14px}
+  .req-btn{padding:5px 14px;font-size:12px;border-radius:14px}
   .add-bar{background:#fff;border-top:1px solid #dde4f4;padding:8px 12px;padding-bottom:max(8px,env(safe-area-inset-bottom))}
   .add-input{border-radius:20px;padding:8px 14px;font-size:13px;border-color:#c8d4ee}
   .add-btn{border-radius:20px;padding:0 16px;font-size:12px;height:34px}
   .msn-footer{display:none}
   .modal{width:92vw;max-width:380px}
-  .m-input{font-size:14px;padding:8px 10px}
+  .m-input{font-size:14px;padding:7px 10px}
   .m-btn{font-size:13px;padding:6px 16px}
   .emoji-opt{font-size:24px}
-  .install-banner{width:100%!important;border-left:none;border-right:none;border-top:1px solid #6688cc;padding:10px 14px;padding-bottom:max(10px,env(safe-area-inset-bottom))}
 }
 </style>
 </head>
 <body>
 
+<!-- LOADING -->
 <div class="loading-screen" id="loading">
   <div class="loading-text">🦋 Conectando ao Messenger...</div>
   <div class="loading-bar"><div class="loading-fill"></div></div>
 </div>
 
-<div class="msn-window">
+<!-- MAIN APP COLUMN -->
+<div class="msn-app">
+
+  <!-- Title bar -->
   <div class="title-bar">
-    <span>🦋</span><span class="tb-text">Messenger Online</span>
-    <div class="tb-btn">_</div><div class="tb-btn">□</div>
+    <span class="tb-text">
+      <span>🦋</span> Messenger Online
+    </span>
+    <div class="tb-btn">_</div>
+    <div class="tb-btn">□</div>
     <div class="tb-btn close" onclick="doSignOut()">✕</div>
   </div>
+
+  <!-- Classic menu bar -->
   <div class="menu-bar">
-    <span class="menu-item" onclick="openEdit()">✏️ Perfil</span>
+    <span class="menu-item" onclick="openEdit()">✏️ Eu</span>
     <span class="menu-item" onclick="openNotifSettings()">🔔 Notificações</span>
+    <span class="menu-item" onclick="toggleMute()">🔕 Silenciar</span>
     <span class="menu-item" onclick="doSignOut()">🚪 Sair</span>
   </div>
-  <div class="msn-header">
-    <div class="my-profile">
-      <div class="avatar-wrap" onclick="openEdit()">
-        <div class="avatar" id="myAvatar">😊</div>
-        <div class="avatar-edit-overlay">✏️</div>
-        <div class="status-dot s-online" id="myStatusDot"></div>
+
+  <!-- My profile header -->
+  <div class="my-header">
+    <div class="my-profile-row">
+      <div class="my-avatar-wrap" onclick="openEdit()">
+        <div class="my-avatar" id="myAvatar">😊</div>
+        <div class="my-avatar-edit">✏️</div>
+        <div class="my-status-dot s-online" id="myStatusDot"></div>
       </div>
       <div class="my-info">
         <div class="my-name" id="myName" onclick="openEdit()">Carregando...</div>
@@ -278,65 +638,98 @@ body{font-family:'Tahoma',Arial,sans-serif;font-size:11px;background:#1a3a6e;bac
           <option value="offline">⚫ Aparecer off</option>
         </select>
       </div>
-      <div class="mobile-actions">
-        <div class="mob-btn" onclick="openNotifSettings()">🔔</div>
-        <div class="mob-btn" id="mobMuteBtn" onclick="toggleMute()">🔔</div>
-        <div class="mob-btn" onclick="openEdit()">✏️</div>
+      <div class="header-actions">
+        <div class="hdr-btn" onclick="openNotifSettings()" title="Notificações">🔔</div>
+        <div class="hdr-btn" id="mobMuteBtn" onclick="toggleMute()" title="Silenciar">🔔</div>
+        <div class="hdr-btn" onclick="openEdit()" title="Editar perfil">✏️</div>
       </div>
     </div>
   </div>
+
+  <!-- Nav tabs -->
   <div class="nav-tabs">
     <div class="nav-tab active" id="tab-contacts" onclick="switchPanel('contacts')">👥 Contatos</div>
-    <div class="nav-tab" id="tab-requests" onclick="switchPanel('requests')">📨 Pedidos <span class="badge" id="reqBadge" style="display:none">0</span></div>
+    <div class="nav-tab" id="tab-requests" onclick="switchPanel('requests')">📨 Pedidos<span class="tab-badge" id="reqBadge" style="display:none">0</span></div>
   </div>
+
+  <!-- CONTACTS PANEL -->
   <div class="panel active" id="panel-contacts">
     <div class="search-bar">
-      <span>🔍</span>
+      <span class="search-icon">🔍</span>
       <input class="search-input" type="text" id="searchInput" placeholder="Procurar contato..." oninput="renderContacts()">
     </div>
-    <div class="list-area" id="contactsArea"><div class="empty-msg">Carregando...</div></div>
+    <div class="list-scroll" id="contactsList">
+      <div class="empty-note">Carregando...</div>
+    </div>
     <div class="add-bar">
       <input class="add-input" type="text" id="addInput" placeholder="Adicionar: nome de usuário">
       <button class="add-btn" onclick="sendRequest()">+ Adicionar</button>
     </div>
   </div>
+
+  <!-- REQUESTS PANEL -->
   <div class="panel" id="panel-requests">
-    <div class="list-area" id="requestsArea"><div class="empty-msg">Nenhum pedido pendente.</div></div>
+    <div class="list-scroll" id="requestsList">
+      <div class="empty-note">Nenhum pedido pendente.</div>
+    </div>
   </div>
+
+  <!-- Footer -->
   <div class="msn-footer">
     <div class="f-btn" id="footerStatus">● Online</div>
     <div class="f-btn" id="muteBtn" onclick="toggleMute()">🔔</div>
-    <div style="margin-left:auto;font-size:10px;color:#666" id="footerUser"></div>
+    <div class="f-user" id="footerUser"></div>
+    <div class="f-btn" onclick="doSignOut()">🚪</div>
   </div>
+</div>
+
+<!-- RIGHT DECORATIVE AREA (desktop only) -->
+<div class="right-bg">
+  <div class="right-butterfly">
+    <div class="wing wing-tl"></div>
+    <div class="wing wing-tr"></div>
+    <div class="wing wing-bl"></div>
+    <div class="wing wing-br"></div>
+  </div>
+  <div class="right-brand">Messenger Online</div>
+  <div class="right-sub">Selecione um contato<br>para começar a conversar</div>
 </div>
 
 <!-- NOTIF POPUP -->
 <div class="notif-popup" id="notifPopup">
-  <div class="notif-avatar" id="notifAvatar">😊</div>
-  <div class="notif-body"><div class="notif-name" id="notifName"></div><div class="notif-msg" id="notifMsg"></div></div>
-  <div class="notif-close" onclick="closeNotif()">✕</div>
-</div>
-<div class="toast" id="toast"></div>
-<div class="install-banner" id="installBanner">
-  <span style="font-size:28px">🦋</span>
-  <div class="install-banner-text"><b>Adicionar à tela inicial</b>Use o Messenger como app!</div>
-  <button class="install-btn" id="installBtn">Instalar</button>
-  <span class="install-dismiss" onclick="dismissInstall()">✕</span>
+  <div class="np-avatar" id="npAvatar">😊</div>
+  <div class="np-body">
+    <div class="np-name" id="npName"></div>
+    <div class="np-msg"  id="npMsg"></div>
+  </div>
+  <div class="np-close" onclick="closeNotif()">✕</div>
 </div>
 
-<!-- EDIT MODAL -->
+<div class="toast" id="toast"></div>
+
+<!-- INSTALL BANNER -->
+<div class="install-banner" id="installBanner">
+  <span style="font-size:26px">🦋</span>
+  <div class="ib-text"><b>Adicionar à tela inicial</b>Use o Messenger como app!</div>
+  <button class="ib-install" id="installBtn">Instalar</button>
+  <span class="ib-dismiss" onclick="dismissInstall()">✕</span>
+</div>
+
+<!-- ════ MODALS ════ -->
+
+<!-- Edit profile -->
 <div class="modal-overlay" id="editModal">
   <div class="modal">
-    <div class="modal-title"><span>✏️ Editar perfil</span><div class="tb-btn close" onclick="closeEdit()">✕</div></div>
+    <div class="modal-bar"><span>✏️ Editar perfil</span><div class="tb-btn close" onclick="closeEdit()">✕</div></div>
     <div class="modal-body">
       <div>
         <div class="m-label">Foto:</div>
         <div class="photo-area">
           <div class="photo-preview" id="photoPreview">😊</div>
           <div class="photo-btns">
-            <button class="photo-btn" onclick="document.getElementById('photoFileInput').click()">📁 Escolher</button>
+            <button class="photo-btn" onclick="document.getElementById('photoFileInput').click()">📁 Escolher foto</button>
             <button class="photo-btn" onclick="removePhoto()">🗑️ Remover</button>
-            <input type="file" id="photoFileInput" accept="image/*" onchange="handlePhotoSelect(event)">
+            <input type="file" id="photoFileInput" accept="image/*" style="display:none" onchange="handlePhotoSelect(event)">
           </div>
         </div>
       </div>
@@ -344,10 +737,7 @@ body{font-family:'Tahoma',Arial,sans-serif;font-size:11px;background:#1a3a6e;bac
       <div><div class="m-label">Nome de exibição:</div><input class="m-input" type="text" id="editDisplay" maxlength="40"></div>
       <div><div class="m-label">Recado pessoal:</div><input class="m-input" type="text" id="editMsg" maxlength="100"></div>
       <div><div class="m-label">🎵 Música ouvindo agora:</div><input class="m-input" type="text" id="editSong" maxlength="80" placeholder="ex: Coldplay - The Scientist"></div>
-      <div>
-        <div class="m-label">Cor do nome:</div>
-        <div class="color-row" id="nameColorPicker"></div>
-      </div>
+      <div><div class="m-label">Cor do nome:</div><div class="color-row" id="nameColorPicker"></div></div>
       <div class="modal-btns">
         <button class="m-btn" onclick="closeEdit()">Cancelar</button>
         <button class="m-btn primary" onclick="saveProfile()">💾 Salvar</button>
@@ -356,12 +746,12 @@ body{font-family:'Tahoma',Arial,sans-serif;font-size:11px;background:#1a3a6e;bac
   </div>
 </div>
 
-<!-- PROFILE VIEW MODAL -->
+<!-- Profile view -->
 <div class="modal-overlay" id="profileModal">
   <div class="modal">
-    <div class="modal-title"><span>👤 Perfil</span><div class="tb-btn close" onclick="closeProfileModal()">✕</div></div>
+    <div class="modal-bar"><span>👤 Perfil</span><div class="tb-btn close" onclick="closeProfileModal()">✕</div></div>
     <div class="modal-body">
-      <div class="profile-view">
+      <div class="pv-wrap">
         <div class="pv-avatar" id="pvAvatar">😊</div>
         <div class="pv-name" id="pvName"></div>
         <div class="pv-username" id="pvUsername"></div>
@@ -380,36 +770,35 @@ body{font-family:'Tahoma',Arial,sans-serif;font-size:11px;background:#1a3a6e;bac
   </div>
 </div>
 
-<!-- HISTORY MODAL -->
+<!-- History -->
 <div class="modal-overlay" id="historyModal">
-  <div class="modal" style="width:340px">
-    <div class="modal-title"><span>📋 Histórico de conversa</span><div class="tb-btn close" onclick="document.getElementById('historyModal').classList.remove('show')">✕</div></div>
+  <div class="modal" style="width:360px">
+    <div class="modal-bar"><span>📋 Histórico de conversa</span><div class="tb-btn close" onclick="document.getElementById('historyModal').classList.remove('show')">✕</div></div>
     <div class="modal-body">
-      <div class="history-list" id="historyList"><div style="padding:10px;text-align:center;color:#999">Selecione um contato.</div></div>
-      <div class="modal-btns">
-        <button class="m-btn primary" onclick="document.getElementById('historyModal').classList.remove('show')">Fechar</button>
-      </div>
+      <div class="hist-list" id="historyList"></div>
+      <div class="modal-btns"><button class="m-btn primary" onclick="document.getElementById('historyModal').classList.remove('show')">Fechar</button></div>
     </div>
   </div>
 </div>
 
-<!-- NOTIF SETTINGS MODAL -->
+<!-- Notif settings -->
 <div class="modal-overlay" id="notifModal">
   <div class="modal">
-    <div class="modal-title"><span>🔔 Notificações</span><div class="tb-btn close" onclick="closeNotifSettings()">✕</div></div>
+    <div class="modal-bar"><span>🔔 Notificações</span><div class="tb-btn close" onclick="closeNotifSettings()">✕</div></div>
     <div class="modal-body">
-      <div class="notif-settings">
-        <div class="notif-row"><div><div class="notif-row-label">Notificações do navegador</div><div class="notif-row-desc">Avisos mesmo minimizado</div></div><div class="toggle-btn" id="toggleBrowser" onclick="toggleBrowserNotif()"></div></div>
-        <div class="notif-row"><div><div class="notif-row-label">Popup na tela</div><div class="notif-row-desc">Balão no canto</div></div><div class="toggle-btn on" id="togglePopup" onclick="togglePopupNotif()"></div></div>
-        <div class="notif-row"><div><div class="notif-row-label">Som</div><div class="notif-row-desc">Bip ao receber mensagem</div></div><div class="toggle-btn on" id="toggleSound" onclick="toggleSoundNotif()"></div></div>
-        <div class="notif-row"><div><div class="notif-row-label">Pedidos de amizade</div><div class="notif-row-desc">Notificar novos pedidos</div></div><div class="toggle-btn on" id="toggleRequests" onclick="toggleRequestsNotif()"></div></div>
-        <div class="notif-row"><div><div class="notif-row-label">Contato ficou online</div><div class="notif-row-desc">Avisar quando conectar</div></div><div class="toggle-btn on" id="toggleOnline" onclick="toggleOnlineNotif()"></div></div>
+      <div class="ns-rows">
+        <div class="ns-row"><div><div class="ns-label">Notificações do navegador</div><div class="ns-desc">Avisos mesmo minimizado</div></div><div class="toggle" id="toggleBrowser" onclick="toggleBrowserNotif()"></div></div>
+        <div class="ns-row"><div><div class="ns-label">Popup na tela</div><div class="ns-desc">Balão no canto</div></div><div class="toggle on" id="togglePopup" onclick="togglePopupNotif()"></div></div>
+        <div class="ns-row"><div><div class="ns-label">Som</div><div class="ns-desc">Bip ao receber mensagem</div></div><div class="toggle on" id="toggleSound" onclick="toggleSoundNotif()"></div></div>
+        <div class="ns-row"><div><div class="ns-label">Pedidos de amizade</div><div class="ns-desc">Notificar novos pedidos</div></div><div class="toggle on" id="toggleRequests" onclick="toggleRequestsNotif()"></div></div>
+        <div class="ns-row"><div><div class="ns-label">Contato ficou online</div><div class="ns-desc">Avisar quando conectar</div></div><div class="toggle on" id="toggleOnline" onclick="toggleOnlineNotif()"></div></div>
       </div>
       <div class="modal-btns"><button class="m-btn primary" onclick="closeNotifSettings()">OK</button></div>
     </div>
   </div>
 </div>
 
+<!-- ════ SCRIPT ════ -->
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import{getAuth,onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -423,17 +812,17 @@ const EMOJIS=['😊','😎','🤔','😄','😢','😂','🥰','😜','🤩','�
 const COLORS=['#000000','#003399','#cc0000','#008800','#7755aa','#cc6600','#006688','#aa0066','#555555','#996633'];
 
 let myUid=null,myData=null,contactsData={},lastMsgData={};
-let pendingPhotoBase64=null,pendingRemovePhoto=false;
+let pendingPhoto=null,pendingRemovePhoto=false;
 let notifTimeout=null,pendingNotifUid=null;
 
 // ── NOTIF SETTINGS ──
 const NS={
-  browser:JSON.parse(localStorage.getItem('notif_browser')?? 'false'),
-  popup:JSON.parse(localStorage.getItem('notif_popup')?? 'true'),
-  sound:JSON.parse(localStorage.getItem('notif_sound')?? 'true'),
-  requests:JSON.parse(localStorage.getItem('notif_requests')?? 'true'),
-  online:JSON.parse(localStorage.getItem('notif_online')?? 'true'),
-  muted:JSON.parse(localStorage.getItem('notif_muted')?? 'false'),
+  browser:JSON.parse(localStorage.getItem('notif_browser')??'false'),
+  popup:JSON.parse(localStorage.getItem('notif_popup')??'true'),
+  sound:JSON.parse(localStorage.getItem('notif_sound')??'true'),
+  requests:JSON.parse(localStorage.getItem('notif_requests')??'true'),
+  online:JSON.parse(localStorage.getItem('notif_online')??'true'),
+  muted:JSON.parse(localStorage.getItem('notif_muted')??'false'),
 };
 function saveNS(){Object.keys(NS).forEach(k=>localStorage.setItem('notif_'+k,JSON.stringify(NS[k])))}
 function syncNSUI(){
@@ -441,7 +830,7 @@ function syncNSUI(){
     const el=document.getElementById('toggle'+k[0].toUpperCase()+k.slice(1));
     if(el)el.classList.toggle('on',NS[k]);
   });
-  document.getElementById('muteBtn').textContent=NS.muted?'🔕':'🔔';
+  const mb=document.getElementById('muteBtn');if(mb)mb.textContent=NS.muted?'🔕':'🔔';
   const mm=document.getElementById('mobMuteBtn');if(mm)mm.textContent=NS.muted?'🔕':'🔔';
 }
 window.toggleMute=()=>{NS.muted=!NS.muted;saveNS();syncNSUI();showToast(NS.muted?'🔕 Silenciado':'🔔 Ativado')};
@@ -458,19 +847,18 @@ function playSound(type='msg'){
   if(!NS.sound||NS.muted)return;
   try{
     const ctx=new(window.AudioContext||window.webkitAudioContext)();
-    const note=(freq,t,dur,vol=0.18)=>{
+    const note=(f,t,d,v=0.18)=>{
       const o=ctx.createOscillator(),g=ctx.createGain();
       o.connect(g);g.connect(ctx.destination);o.type='sine';
-      o.frequency.setValueAtTime(freq,ctx.currentTime+t);
+      o.frequency.setValueAtTime(f,ctx.currentTime+t);
       g.gain.setValueAtTime(0,ctx.currentTime+t);
-      g.gain.linearRampToValueAtTime(vol,ctx.currentTime+t+0.01);
-      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+t+dur);
-      o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+dur+0.05);
+      g.gain.linearRampToValueAtTime(v,ctx.currentTime+t+.01);
+      g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+t+d);
+      o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+d+.05);
     };
-    if(type==='msg'){note(523,.0,.12);note(659,.13,.12);note(784,.26,.22)}
-    else if(type==='online'){note(880,.0,.08);note(1100,.10,.15)}
-    else if(type==='request'){note(440,.0,.1);note(550,.12,.1);note(660,.24,.18)}
-    else if(type==='nudge'){[0,.07,.14,.21].forEach((t,i)=>note(i%2===0?700:400,t,.06,.25))}
+    if(type==='msg'){note(523,0,.12);note(659,.13,.12);note(784,.26,.22)}
+    else if(type==='online'){note(880,0,.08);note(1100,.1,.15)}
+    else if(type==='request'){note(440,0,.1);note(550,.12,.1);note(660,.24,.18)}
   }catch(e){}
 }
 
@@ -482,21 +870,21 @@ function notify(uid,name,msg,avatarHtml,snd='msg'){
     new Notification(name+(snd==='online'?' ficou online!':' diz:'),{body:msg,icon:'../favicon.svg',tag:'messenger',renotify:true});
   if(NS.popup){
     pendingNotifUid=uid;
-    document.getElementById('notifAvatar').innerHTML=avatarHtml;
-    document.getElementById('notifName').textContent=name+(snd==='online'?' ficou online!':' diz:');
-    document.getElementById('notifMsg').textContent=msg;
+    document.getElementById('npAvatar').innerHTML=avatarHtml;
+    document.getElementById('npName').textContent=name+(snd==='online'?' ficou online!':' diz:');
+    document.getElementById('npMsg').textContent=msg;
     const p=document.getElementById('notifPopup');p.classList.add('show');
     clearTimeout(notifTimeout);notifTimeout=setTimeout(()=>p.classList.remove('show'),6000);
   }
   if(!document.hasFocus()){
     let blink=true;const orig=document.title;
-    const iv=setInterval(()=>{document.title=blink?'💬 '+name+' diz...':orig;blink=!blink},900);
+    const iv=setInterval(()=>{document.title=blink?'💬 '+name+'...':orig;blink=!blink},900);
     window.addEventListener('focus',()=>{clearInterval(iv);document.title=orig},{once:true});
   }
 }
 window.closeNotif=()=>document.getElementById('notifPopup').classList.remove('show');
 document.getElementById('notifPopup').addEventListener('click',e=>{
-  if(!e.target.classList.contains('notif-close')){closeNotif();if(pendingNotifUid)window.location.href=`chat.html?with=${pendingNotifUid}`}
+  if(!e.target.classList.contains('np-close')){closeNotif();if(pendingNotifUid)window.location.href=`chat.html?with=${pendingNotifUid}`}
 });
 
 // ── AUTH ──
@@ -520,11 +908,11 @@ function renderMyProfile(){
   else av.textContent=myData.emoji||'😊';
   const nm=document.getElementById('myName');
   nm.textContent=myData.display||myData.username;
-  nm.style.color=myData.nameColor||'#003399';
+  nm.style.color=myData.nameColor?'#fff':'#fff'; // always white on blue header
   document.getElementById('myMsg').textContent=myData.message||'Clique para editar...';
   const se=document.getElementById('mySong');
   if(myData.song){se.textContent='🎵 '+myData.song;se.style.display='block'}else se.style.display='none';
-  document.getElementById('footerUser').textContent='@'+myData.username;
+  document.getElementById('footerUser').textContent='@'+(myData.username||'');
   document.getElementById('statusSel').value=myData.status||'online';
   updateStatusDot(myData.status||'online');
 }
@@ -546,8 +934,10 @@ window.changeStatus=async()=>{
 };
 
 function updateStatusDot(s){
-  document.getElementById('myStatusDot').className='status-dot s-'+s;
-  document.getElementById('footerStatus').textContent={online:'● Online',away:'● Ausente',busy:'● Ocupado',offline:'● Offline'}[s]||'● Online';
+  const dot=document.getElementById('myStatusDot');
+  dot.className='my-status-dot s-'+s;
+  const labels={online:'● Online',away:'● Ausente',busy:'● Ocupado',offline:'● Offline'};
+  document.getElementById('footerStatus').textContent=labels[s]||'● Online';
 }
 
 window.switchPanel=name=>{
@@ -570,12 +960,13 @@ function listenContacts(){
         const nd=s.data();
         if(prev[uid]&&prev[uid].status!=='online'&&nd.status==='online'&&NS.online){
           const ah=nd.photoBase64?`<img src="${nd.photoBase64}" alt="">`:(nd.emoji||'😊');
-          notify(uid,nd.display||nd.username,'Ficou online! 🟢',ah,'online');
+          notify(uid,nd.display||nd.username,'ficou online! 🟢',ah,'online');
         }
         contactsData[uid]=nd;
       }
     }
-    renderContacts();listenLastMessages();
+    renderContacts();
+    listenLastMessages();
   });
 }
 
@@ -588,7 +979,7 @@ function listenLastMessages(){
         text:snap.docs[0].data().text||'',
         fromMe:snap.docs[0].data().senderUid===myUid,
         time:snap.docs[0].data().createdAt?.toDate?snap.docs[0].data().createdAt.toDate():null,
-        read:snap.docs[0].data().readBy?snap.docs[0].data().readBy.includes(myUid):snap.docs[0].data().senderUid===myUid,
+        read:(snap.docs[0].data().readBy||[]).includes(myUid)||snap.docs[0].data().senderUid===myUid,
       };
       renderContacts();
     });
@@ -597,54 +988,74 @@ function listenLastMessages(){
 
 window.renderContacts=()=>{
   const filter=(document.getElementById('searchInput').value||'').toLowerCase();
-  const area=document.getElementById('contactsArea');
+  const area=document.getElementById('contactsList');
   const blocked=myData?.blocked||[];
   const all=Object.values(contactsData).filter(c=>
     !filter||(c.display||'').toLowerCase().includes(filter)||(c.username||'').toLowerCase().includes(filter)
   );
-  if(!all.length){area.innerHTML=`<div class="empty-msg">${filter?'Nenhum contato encontrado.':'Nenhum contato ainda.<br>Adicione abaixo.'}</div>`;return}
+  if(!all.length){
+    area.innerHTML=`<div class="empty-note">${filter?'Nenhum resultado.':'Nenhum contato ainda.<br>Adicione pelo campo abaixo.'}</div>`;
+    return;
+  }
   const ord={online:0,away:1,busy:2,offline:3};
   all.sort((a,b)=>(ord[a.status]||3)-(ord[b.status]||3));
+
+  // Split into online and offline groups
+  const online=all.filter(c=>(c.status||'offline')!=='offline');
+  const offline=all.filter(c=>(c.status||'offline')==='offline');
   area.innerHTML='';
-  const online=all.filter(c=>c.status!=='offline').length;
-  const hdr=document.createElement('div');hdr.className='group-header';
-  hdr.innerHTML=`<span class="group-arrow" id="garrow">▼</span><span class="group-name">Contatos</span><span class="group-count">${online}/${all.length}</span>`;
-  hdr.onclick=()=>{document.getElementById('glist').classList.toggle('hidden');document.getElementById('garrow').classList.toggle('col')};
-  area.appendChild(hdr);
-  const gl=document.createElement('div');gl.className='group-list';gl.id='glist';
-  all.forEach(c=>{
-    const lm=lastMsgData[c.uid];
-    const unread=lm&&!lm.read&&!lm.fromMe;
-    const isBlocked=blocked.includes(c.uid);
-    const item=document.createElement('div');
-    item.className='contact-item'+(unread?' unread-item':'')+(isBlocked?' blocked-item':'');
-    const ah=c.photoBase64?`<img src="${c.photoBase64}" alt="">`:(c.emoji||'😊');
-    let lmHtml='';
-    if(lm){
-      const pfx=lm.fromMe?'<span class="lm-me">Eu: </span>':'';
-      const rd=lm.fromMe?`<span class="lm-read">${lm.read?'✓✓':'✓'}</span>`:(unread?'<span class="lm-unread-dot"></span>':'');
-      const t=lm.time?lm.time.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'';
-      lmHtml=`<div class="lm-row">${rd}${pfx}<span class="lm-text">${escHtml(lm.text)}</span><span class="lm-time">${t}</span></div>`;
-    }
-    const songHtml=c.song?`<div class="c-song">🎵 ${escHtml(c.song)}</div>`:'';
-    item.innerHTML=`
-      <div class="contact-avatar">${ah}<div class="c-dot s-${c.status||'offline'}"></div></div>
-      <div class="contact-info">
-        <div class="c-name-row">
-          <span class="c-name${unread?' c-name-bold':''}" style="color:${c.nameColor||'#000'}">${escHtml(c.display||c.username)}</span>
-        </div>
-        ${lmHtml||(c.song?`<div class="c-msg">${escHtml(c.message||'')}</div>${songHtml}`:`<div class="c-msg">${escHtml(c.message||'')}</div>`)}
-      </div>
-      <div class="c-actions">
-        <div class="c-act-btn" title="Histórico" onclick="event.stopPropagation();openHistory('${c.uid}')">📋</div>
-        <div class="c-act-btn" title="${isBlocked?'Desbloquear':'Bloquear'}" onclick="event.stopPropagation();toggleBlock('${c.uid}')">${isBlocked?'🔓':'🚫'}</div>
-        <div class="c-act-btn" title="Remover" onclick="event.stopPropagation();confirmRemove('${c.uid}')">🗑️</div>
-      </div>`;
-    item.onclick=()=>isBlocked?showToast('Contato bloqueado.'):window.location.href=`chat.html?with=${c.uid}`;
-    gl.appendChild(item);
-  });
-  area.appendChild(gl);
+
+  function makeGroup(label,items,gid){
+    if(!items.length)return;
+    const hdr=document.createElement('div');hdr.className='group-hdr';
+    hdr.innerHTML=`<span class="group-arrow" id="arr-${gid}">▼</span><span class="group-label">${label}</span><span class="group-count">(${items.length})</span>`;
+    hdr.onclick=()=>{
+      document.getElementById('gb-'+gid).classList.toggle('hidden');
+      document.getElementById('arr-'+gid).classList.toggle('col');
+    };
+    area.appendChild(hdr);
+    const body=document.createElement('div');body.className='group-body';body.id='gb-'+gid;
+    items.forEach(c=>body.appendChild(makeContactItem(c,blocked)));
+    area.appendChild(body);
+  }
+
+  makeGroup('Online ('+online.length+')',online,'online');
+  makeGroup('Offline ('+offline.length+')',offline,'offline');
 };
+
+function makeContactItem(c,blocked){
+  const lm=lastMsgData[c.uid];
+  const unread=lm&&!lm.read&&!lm.fromMe;
+  const isBlocked=blocked.includes(c.uid);
+  const item=document.createElement('div');
+  item.className='contact-item'+(isBlocked?' blocked-item':'');
+  const ah=c.photoBase64?`<img src="${c.photoBase64}" alt="">`:(c.emoji||'😊');
+  let subHtml='';
+  if(lm){
+    const pfx=lm.fromMe?'<span class="lm-pfx">Eu: </span>':'';
+    const rd=lm.fromMe
+      ?`<span class="lm-read">${lm.read?'✓✓':'✓'}</span>`
+      :(unread?'<span class="lm-dot"></span>':'');
+    const t=lm.time?lm.time.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'';
+    subHtml=`<div class="lm-row">${rd}${pfx}<span class="lm-txt">${escHtml(lm.text)}</span><span class="lm-time">${t}</span></div>`;
+  } else {
+    subHtml=`<div class="c-sub">${escHtml(c.message||'')}${c.song?'<div class="c-song-line">🎵 '+escHtml(c.song)+'</div>':''}</div>`;
+  }
+  item.innerHTML=`
+    <div class="c-avatar">${ah}<div class="c-dot s-${c.status||'offline'}"></div></div>
+    <div class="c-info">
+      <div class="c-name${unread?' c-unread':''}" style="color:${c.nameColor||'#000'}">${escHtml(c.display||c.username)}</div>
+      ${subHtml}
+    </div>
+    <div class="c-actions">
+      <div class="c-act" title="Perfil" onclick="event.stopPropagation();openProfileModal('${c.uid}')">👤</div>
+      <div class="c-act" title="Histórico" onclick="event.stopPropagation();openHistory('${c.uid}')">📋</div>
+      <div class="c-act" title="${isBlocked?'Desbloquear':'Bloquear'}" onclick="event.stopPropagation();toggleBlock('${c.uid}')">${isBlocked?'🔓':'🚫'}</div>
+      <div class="c-act" title="Remover" onclick="event.stopPropagation();confirmRemove('${c.uid}')">🗑️</div>
+    </div>`;
+  item.addEventListener('click',()=>{if(!isBlocked)window.location.href=`chat.html?with=${c.uid}`;else showToast('Contato bloqueado.')});
+  return item;
+}
 
 // ── ADD / REQUESTS ──
 window.sendRequest=async()=>{
@@ -676,14 +1087,14 @@ function listenRequests(){
       if(s.exists()){const c=s.data();const ah=c.photoBase64?`<img src="${c.photoBase64}" alt="">`:(c.emoji||'😊');notify(uid,c.display||c.username,'enviou pedido de amizade!',ah,'request')}
     }
     first=false;
-    const area=document.getElementById('requestsArea');
-    if(!pending.length){area.innerHTML='<div class="empty-msg">Nenhum pedido pendente.</div>';return}
+    const area=document.getElementById('requestsList');
+    if(!pending.length){area.innerHTML='<div class="empty-note">Nenhum pedido pendente.</div>';return}
     area.innerHTML='';
     for(const uid of pending){
       const s=await getDoc(doc(db,'users',uid));if(!s.exists())continue;
-      const c=s.data();const item=document.createElement('div');item.className='request-item';
+      const c=s.data();const item=document.createElement('div');item.className='req-item';
       const ah=c.photoBase64?`<img src="${c.photoBase64}" alt="">`:(c.emoji||'😊');
-      item.innerHTML=`<div class="req-avatar">${ah}</div><div class="req-info"><div class="req-name">${escHtml(c.display||c.username)}</div><div class="req-sub">@${escHtml(c.username)} quer ser seu contato</div></div><div class="req-btns"><button class="req-btn accept" onclick="acceptRequest('${uid}')">✔</button><button class="req-btn decline" onclick="declineRequest('${uid}')">✘</button></div>`;
+      item.innerHTML=`<div class="req-avatar">${ah}</div><div class="req-info"><div class="req-name">${escHtml(c.display||c.username)}</div><div class="req-sub">@${escHtml(c.username)} quer ser seu contato</div></div><div class="req-btns"><button class="req-btn ok" onclick="acceptRequest('${uid}')">✔ Aceitar</button><button class="req-btn no" onclick="declineRequest('${uid}')">✘</button></div>`;
       area.appendChild(item);
     }
   });
@@ -725,14 +1136,15 @@ window.openHistory=async uid=>{
   list.innerHTML='';
   [...snap.docs].reverse().forEach(d=>{
     const data=d.data();const item=document.createElement('div');
-    if(data.type==='nudge'||data.type==='system'){
-      item.className='history-item h-system';item.innerHTML=`<span>${escHtml(data.text)}</span>`;
+    if(data.type==='nudge'||data.type==='wink'||data.type==='system'){
+      item.className='hist-item h-sys';item.innerHTML=`<span>${escHtml(data.text)}</span>`;
     }else{
       const mine=data.senderUid===myUid;
       const name=mine?(myData?.display||myData?.username):(c?.display||c?.username||'?');
       const t=data.createdAt?.toDate?data.createdAt.toDate().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
-      item.className='history-item '+(mine?'h-mine':'h-theirs');
-      item.innerHTML=`<span class="h-name">${escHtml(name)}</span><span class="h-text">${escHtml(data.text)}</span><span class="h-time">${t}</span>`;
+      const txt=data.type==='image'?'[imagem]':data.type==='file'?`📎 ${data.fileName}`:data.text;
+      item.className='hist-item '+(mine?'h-mine':'h-theirs');
+      item.innerHTML=`<span class="h-name">${escHtml(name)}</span><span class="h-txt">${escHtml(txt)}</span><span class="h-time">${t}</span>`;
     }
     list.appendChild(item);
   });
@@ -748,8 +1160,8 @@ window.openProfileModal=uid=>{
   document.getElementById('pvMsg').textContent=c.message||'';
   const se=document.getElementById('pvSong');
   if(c.song){se.textContent='🎵 '+c.song;se.style.display='block'}else se.style.display='none';
-  const sl={online:'Online',away:'Ausente',busy:'Ocupado',offline:'Offline'}[c.status||'offline'];
-  document.getElementById('pvStatus').innerHTML=`<span class="c-dot s-${c.status||'offline'}" style="position:static;display:inline-block;width:8px;height:8px;border-radius:50%;border:1px solid #ccc"></span> ${sl}`;
+  const sLabel={online:'🟢 Online',away:'🟡 Ausente',busy:'🔴 Ocupado',offline:'⚫ Offline'}[c.status||'offline'];
+  document.getElementById('pvStatus').textContent=sLabel;
   const isBlocked=(myData?.blocked||[]).includes(uid);
   document.getElementById('pvBlockBtn').textContent=isBlocked?'🔓 Desbloquear':'🚫 Bloquear';
   document.getElementById('pvBlockBtn').onclick=()=>{toggleBlock(uid);closeProfileModal()};
@@ -763,7 +1175,7 @@ window.closeProfileModal=()=>document.getElementById('profileModal').classList.r
 // ── EDIT PROFILE ──
 window.openEdit=()=>{
   if(!myData)return;
-  pendingPhotoBase64=null;pendingRemovePhoto=false;
+  pendingPhoto=null;pendingRemovePhoto=false;
   const pp=document.getElementById('photoPreview');
   if(myData.photoBase64)pp.innerHTML=`<img src="${myData.photoBase64}" alt="">`;else pp.textContent=myData.emoji||'😊';
   const picker=document.getElementById('emojiPicker');picker.innerHTML='';
@@ -789,11 +1201,11 @@ window.handlePhotoSelect=event=>{
   const file=event.target.files[0];if(!file)return;
   if(file.size>500000){showToast('Foto muito grande. Máx 500KB.');return}
   const r=new FileReader();
-  r.onload=e=>{pendingPhotoBase64=e.target.result;pendingRemovePhoto=false;document.getElementById('photoPreview').innerHTML=`<img src="${pendingPhotoBase64}" alt="">`};
+  r.onload=e=>{pendingPhoto=e.target.result;pendingRemovePhoto=false;document.getElementById('photoPreview').innerHTML=`<img src="${pendingPhoto}" alt="">`};
   r.readAsDataURL(file);
 };
 window.removePhoto=()=>{
-  pendingRemovePhoto=true;pendingPhotoBase64=null;
+  pendingRemovePhoto=true;pendingPhoto=null;
   document.getElementById('photoPreview').textContent=document.querySelector('.emoji-opt.selected')?.textContent||myData?.emoji||'😊';
 };
 window.saveProfile=async()=>{
@@ -804,7 +1216,7 @@ window.saveProfile=async()=>{
   const nameColor=document.querySelector('.color-opt.selected')?.style.background||'#000000';
   if(!display){showToast('Nome não pode ser vazio.');return}
   const upd={display,message,song,emoji,nameColor};
-  if(pendingPhotoBase64)upd.photoBase64=pendingPhotoBase64;
+  if(pendingPhoto)upd.photoBase64=pendingPhoto;
   if(pendingRemovePhoto)upd.photoBase64='';
   await updateDoc(doc(db,'users',myUid),upd);
   myData={...myData,...upd};renderMyProfile();
@@ -824,7 +1236,7 @@ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dip=e;if(!l
 document.getElementById('installBtn').addEventListener('click',async()=>{if(!dip)return;dip.prompt();const{outcome}=await dip.userChoice;if(outcome==='accepted'){document.getElementById('installBanner').classList.remove('show');showToast('✅ App instalado!')}dip=null});
 window.dismissInstall=()=>{document.getElementById('installBanner').classList.remove('show');localStorage.setItem('install_dismissed','1')};
 
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600)}
 function escHtml(t){return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 </script>
 
